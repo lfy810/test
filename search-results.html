@@ -169,13 +169,14 @@ body{font-family:'PingFang SC','Helvetica Neue',Arial,sans-serif;background:line
             cursor: pointer;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.5s ease;
+            transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s 0.5s;
             z-index: 9998;
         }
 
         .back-to-top.show {
             opacity: 1;
             visibility: visible;
+            transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s;
         }
 
         .back-to-top:hover {
