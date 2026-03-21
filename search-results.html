@@ -85,6 +85,23 @@ body{font-family:'PingFang SC','Helvetica Neue',Arial,sans-serif;background:line
             }
         }
 
+        /* 潮水聚集动画 - 从右到左 */
+        @keyframes tide-left {
+            0% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* 潮水动画类 */
+        .tide-left {
+            animation: tide-left 0.8s ease-out forwards;
+        }
+
         /* 底部导航 */
 .tab-bar{position:fixed;bottom:0;width:100%;max-width:750px;height:64px;background:#fff;border-top:1px solid #e5e7eb;display:flex;justify-content:space-around;align-items:center;z-index:100}
 .tab-item{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;color:#64748b;padding:8px 16px;border-radius:8px;transition:all .2s}
@@ -106,16 +123,16 @@ body{font-family:'PingFang SC','Helvetica Neue',Arial,sans-serif;background:line
         </header>
         
         <!-- 搜索框 -->
-        <div class="search-container">
+        <div class="search-container tide-left">
             <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="搜索健康知识、医师..." onkeypress="handleSearch(event)" oninput="handleRealTimeSearch(event)">
+                <input type="text" id="searchInput" placeholder="搜索健康知识、医师..." onkeypress="handleSearch(event)" oninput="handleRealTimeSearch(event)" onclick="handleSearchClick(event)">
                 <div id="searchSuggestions" class="search-suggestions"></div>
             </div>
         </div>
         
         <!-- 搜索结果 -->
-        <div class="search-results">
+        <div class="search-results tide-left">
             <div class="search-summary" id="searchSummary">
                 搜索结果：共找到 <span id="resultCount">0</span> 条相关内容
             </div>
@@ -179,6 +196,60 @@ body{font-family:'PingFang SC','Helvetica Neue',Arial,sans-serif;background:line
     
     <script>
         // 搜索数据将从数据服务获取
+        
+        // 热门搜索关键词
+        const hotKeywords = [
+            { title: '糖尿病饮食管理', type: 'article', url: 'article.html' },
+            { title: '血糖监测方法', type: 'article', url: 'glucose-monitoring.html' },
+            { title: '糖尿病运动锻炼', type: 'article', url: 'exercise.html' },
+            { title: '张伟明医师', type: 'doctor', url: 'doctor-zhang.html' },
+            { title: '李雅琴医师', type: 'doctor', url: 'doctor-li.html' },
+            { title: '王建国医师', type: 'doctor', url: 'doctor-wang.html' },
+            { title: '1型糖尿病', type: 'type', url: 'type1.html' },
+            { title: '2型糖尿病', type: 'type', url: 'type2.html' },
+            { title: '妊娠糖尿病', type: 'type', url: 'type-pregnancy.html' }
+        ];
+        
+        // 搜索栏点击事件处理
+        function handleSearchClick(event) {
+            const keyword = event.target.value.trim();
+            const suggestionsContainer = document.getElementById('searchSuggestions');
+            
+            if (keyword.length > 0) {
+                // 如果有字符，触发实时搜索
+                handleRealTimeSearch(event);
+            } else {
+                // 如果没有字符，显示热门搜索关键词
+                showHotKeywords(suggestionsContainer);
+            }
+        }
+        
+        // 显示热门搜索关键词
+        function showHotKeywords(container) {
+            // 随机选择3个热门关键词
+            const shuffled = [...hotKeywords].sort(() => 0.5 - Math.random());
+            const selected = shuffled.slice(0, 3);
+            
+            if (selected.length > 0) {
+                container.innerHTML = '';
+                selected.forEach(item => {
+                    const suggestion = document.createElement('div');
+                    suggestion.className = 'suggestion-item';
+                    suggestion.textContent = item.title;
+                    suggestion.onclick = () => window.location.href = item.url;
+                    container.appendChild(suggestion);
+                });
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
+            }
+        }
+        
+        // 滚动页面时隐藏搜索建议
+        window.addEventListener('scroll', () => {
+            const suggestionsContainer = document.getElementById('searchSuggestions');
+            suggestionsContainer.style.display = 'none';
+        });
         
         // 初始化页面
         document.addEventListener('DOMContentLoaded', function() {

@@ -421,7 +421,7 @@
             </div>
             <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="搜索健康知识、医师..." onkeypress="handleSearch(event)" oninput="handleRealTimeSearch(event)">
+                <input type="text" id="searchInput" placeholder="搜索健康知识、医师..." onkeypress="handleSearch(event)" oninput="handleRealTimeSearch(event)" onclick="handleSearchClick(event)">
                 <div id="searchSuggestions" class="search-suggestions"></div>
             </div>
             <div class="user-icon">
@@ -632,6 +632,19 @@ consultBtns.forEach(btn=>{
     });
 });
 
+// 热门搜索关键词
+const hotKeywords = [
+    { title: '糖尿病饮食管理', type: 'article', url: 'article.html' },
+    { title: '血糖监测方法', type: 'article', url: 'glucose-monitoring.html' },
+    { title: '糖尿病运动锻炼', type: 'article', url: 'exercise.html' },
+    { title: '张伟明医师', type: 'doctor', url: 'doctor-zhang.html' },
+    { title: '李雅琴医师', type: 'doctor', url: 'doctor-li.html' },
+    { title: '王建国医师', type: 'doctor', url: 'doctor-wang.html' },
+    { title: '1型糖尿病', type: 'type', url: 'type1.html' },
+    { title: '2型糖尿病', type: 'type', url: 'type2.html' },
+    { title: '妊娠糖尿病', type: 'type', url: 'type-pregnancy.html' }
+];
+
 // 搜索功能
 function handleSearch(event){
     if(event.key==='Enter'){
@@ -688,13 +701,54 @@ async function handleRealTimeSearch(event){
     }
 }
 
-// 点击页面其他地方关闭搜索建议
-document.addEventListener('click',event=>{
-    const searchBox=document.querySelector('.search-box');
-    const suggestionsContainer=document.getElementById('searchSuggestions');
-    if(!searchBox.contains(event.target)){
-        suggestionsContainer.style.display='none';
+// 搜索栏点击事件处理
+function handleSearchClick(event) {
+    const keyword = event.target.value.trim();
+    const suggestionsContainer = document.getElementById('searchSuggestions');
+    
+    if (keyword.length > 0) {
+        // 如果有字符，触发实时搜索
+        handleRealTimeSearch(event);
+    } else {
+        // 如果没有字符，显示热门搜索关键词
+        showHotKeywords(suggestionsContainer);
     }
+}
+
+// 显示热门搜索关键词
+function showHotKeywords(container) {
+    // 随机选择3个热门关键词
+    const shuffled = [...hotKeywords].sort(() => 0.5 - Math.random());
+    const selected = shuffled.slice(0, 3);
+    
+    if (selected.length > 0) {
+        container.innerHTML = '';
+        selected.forEach(item => {
+            const suggestion = document.createElement('div');
+            suggestion.className = 'suggestion-item';
+            suggestion.textContent = item.title;
+            suggestion.onclick = () => window.location.href = item.url;
+            container.appendChild(suggestion);
+        });
+        container.style.display = 'block';
+    } else {
+        container.style.display = 'none';
+    }
+}
+
+// 点击页面其他地方关闭搜索建议
+document.addEventListener('click', event => {
+    const searchBox = document.querySelector('.search-box');
+    const suggestionsContainer = document.getElementById('searchSuggestions');
+    if (!searchBox.contains(event.target)) {
+        suggestionsContainer.style.display = 'none';
+    }
+});
+
+// 滚动页面时隐藏搜索建议
+window.addEventListener('scroll', () => {
+    const suggestionsContainer = document.getElementById('searchSuggestions');
+    suggestionsContainer.style.display = 'none';
 });
 
 // 轮播图功能
