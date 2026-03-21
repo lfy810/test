@@ -304,11 +304,12 @@ body{font-family:'PingFang SC','Helvetica Neue',Arial,sans-serif;background:line
     <script>
         // 处理返回逻辑
         function handleBack() {
-            // 如果历史记录只有当前页面，则跳转到首页
-            if (window.history.length <= 2) {
-                window.location.href = 'index.html';
-            } else {
+            // 如果有上一页历史记录，则返回上一页
+            if (window.history.length > 1) {
                 window.history.back();
+            } else {
+                // 没有上一页时返回主页
+                window.location.href = 'index.html';
             }
         }
 
