@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1型糖尿病 - 糖尿病预治智能助手</title>
+    <meta name="description" content="1型糖尿病的病因、症状、诊断和治疗方法，帮助患者更好地管理疾病">
+    <meta name="keywords" content="1型糖尿病,胰岛素依赖型糖尿病,糖尿病治疗">
+    <meta name="author" content="糖尿病预治智能助手">
+    <link rel="preconnect" href="https://static.mastergo.com">
+    <link rel="stylesheet" href="https://static.mastergo.com/static/ai/resource/html/googleapis/css2">
+    <link rel="stylesheet" href="css/all.min.css">
+    <style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'PingFang SC','Helvetica Neue',Arial,sans-serif;background:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 50%,#f8fafc 100%);color:#1e293b;line-height:1.6}
+.container{max-width:750px;margin:0 auto;background:#fff;min-height:100vh;padding-bottom:70px;box-shadow:0 0 30px rgba(0,0,0,0.05);border-radius:0 0 20px 20px}
+        
+/* 顶部导航栏 */
+.top-bar{background:linear-gradient(135deg,#0369a1,#0ea5e9);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 20px rgba(3,105,161,0.2);position:sticky;top:0;z-index:100}
+.back-btn{color:#fff;font-size:20px;cursor:pointer}
+.page-title{font-size:18px;font-weight:bold;color:#fff}
+.share-btn{color:#fff;font-size:20px;cursor:pointer}
+        
+/* 类型导航 */
+.type-nav{display:flex;overflow-x:auto;padding:16px 24px;background:linear-gradient(180deg,#f8fafc,#f0f9ff);border-bottom:1px solid rgba(3,105,161,0.1);position:sticky;top:70px;z-index:50}
+.type-nav::-webkit-scrollbar{display:none}
+.nav-item{padding:10px 20px;margin-right:12px;background:#fff;border-radius:24px;font-size:14px;font-weight:600;color:#475569;cursor:pointer;transition:all .3s ease;border:1px solid rgba(3,105,161,0.1);box-shadow:0 2px 8px rgba(0,0,0,0.05)}
+.nav-item.active{background:linear-gradient(135deg,#0369a1,#0ea5e9);color:#fff;border-color:#0ea5e9;box-shadow:0 4px 16px rgba(3,105,161,0.3)}
+.nav-item:active:not(.active){border-color:#0ea5e9;color:#0369a1;transform:translateY(-1px)}
+        
+/* 内容区域 */
+.content{padding:24px}
+.main-title{font-size:28px;font-weight:700;color:#0369a1;margin-bottom:24px;text-align:center}
+/* 类型卡片 */
+.type-card{background:linear-gradient(135deg,#fff,#f8fafc);border-radius:20px;padding:28px;box-shadow:0 6px 24px rgba(0,0,0,0.08);border:1px solid rgba(3,105,161,0.1)}
+.type-header{display:flex;align-items:center;gap:20px;margin-bottom:24px}
+.type-image{width:90px;height:90px;border-radius:50%;overflow:hidden;flex-shrink:0;border:3px solid #0ea5e9;box-shadow:0 6px 20px rgba(3,105,161,0.2)}
+.type-image img{width:100%;height:100%;object-fit:cover}
+.type-info h2{font-size:24px;font-weight:700;color:#0369a1;margin-bottom:8px}
+.type-info p{font-size:15px;color:#475569;font-weight:500}
+        
+/* 特征标签 */
+.feature-tags{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0}
+.tag{padding:8px 16px;background:linear-gradient(135deg,rgba(3,105,161,0.1),rgba(14,165,233,0.1));color:#0369a1;border-radius:20px;font-size:13px;font-weight:600;border:1px solid rgba(3,105,161,0.2)}
+/* 大型图片样式 */
+.type-image-large{margin:20px 0;border-radius:12px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.1)}
+.type-image-large img{width:100%;height:auto;max-height:200px;object-fit:cover}
+        
+/* 内容区块 */
+.content-section{margin-bottom:32px;padding:20px;background:#fff;border-radius:16px;border:1px solid rgba(3,105,161,0.1);box-shadow:0 4px 20px rgba(0,0,0,0.05)}
+.section-title{font-size:18px;font-weight:600;color:#0369a1;margin-bottom:16px;display:flex;align-items:center;gap:12px;padding-left:20px;position:relative}
+.section-title::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:4px;height:20px;background:linear-gradient(180deg,#0369a1,#0ea5e9);border-radius:2px}
+.section-title i{font-size:16px;color:#0ea5e9}
+.section-content{font-size:15px;color:#334155;line-height:1.7}
+.section-content p{margin-bottom:16px;text-align:justify}
+.section-content ul{margin:20px 0;padding-left:32px}
+.section-content li{margin-bottom:12px;position:relative;padding-left:12px}
+        
+.section-content li::before{content:'•';position:absolute;left:-8px;color:#0ea5e9;font-weight:bold}
+/* 底部导航 */
+.tab-bar{position:fixed;bottom:0;width:100%;max-width:750px;height:70px;background:linear-gradient(180deg,#fff,#f8fafc);border-top:1px solid rgba(3,105,161,0.1);display:flex;justify-content:space-around;align-items:center;z-index:100;box-shadow:0 -4px 20px rgba(0,0,0,0.05)}
+.tab-item{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;color:#64748b;padding:6px 8px;border-radius:8px;transition:all .3s ease;position:relative}
+.tab-item.active{background:linear-gradient(135deg,#0369a1,#0ea5e9);color:#fff;box-shadow:0 4px 16px rgba(3,105,161,0.3)}
+.tab-item i{font-size:22px;transition:transform .3s ease}
+.tab-item:active i{transform:translateY(-2px)}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部导航栏 -->
+        <header class="top-bar">
+            <div class="back-btn" onclick="handleBack()">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+            <div class="page-title">糖尿病类型</div>
+            <div class="share-btn">
+                <i class="fas fa-share-alt"></i>
+            </div>
+        </header>
+        
+        <!-- 类型导航 -->
+        <div class="type-nav">
+            <div class="nav-item active" onclick="window.location.href='type1.html'">1型糖尿病</div>
+            <div class="nav-item" onclick="window.location.href='type2.html'">2型糖尿病</div>
+            <div class="nav-item" onclick="window.location.href='type-pregnancy.html'">妊娠糖尿病</div>
+            <div class="nav-item" onclick="window.location.href='type-other.html'">其他类型</div>
+        </div>
+        
+        <!-- 内容区域 -->
+        <div class="content">
+            <h1 class="main-title">1型糖尿病</h1>
+            
+            <!-- 1型糖尿病 -->
+            <div class="type-card">
+                <div class="type-header">
+                    <div class="type-image">
+                        <img src="img/tnb1.png" alt="1型糖尿病">
+                    </div>
+                    <div class="type-info">
+                        <h2>1型糖尿病</h2>
+                        <p>胰岛素依赖型糖尿病</p>
+                    </div>
+                </div>
+                
+                <div class="feature-tags">
+                    <span class="tag">青少年发病</span>
+                    <span class="tag">自身免疫性疾病</span>
+                    <span class="tag">胰岛素绝对缺乏</span>
+                </div>
+                
+                <div class="type-image-large">
+                    <img src="img/t1.jpg" alt="1型糖尿病">
+                </div>
+                
+                <div class="content-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-disease"></i>
+                        发病机制
+                    </h3>
+                    <div class="section-content">
+                        <p>1型糖尿病是一种自身免疫性疾病，身体的免疫系统错误地攻击并破坏了胰腺中产生胰岛素的β细胞。随着β细胞的逐渐破坏，胰岛素分泌能力完全丧失，导致血糖无法被有效调节。</p>
+                        <ul>
+                            <li>遗传因素：与HLA基因密切相关</li>
+                            <li>环境因素：病毒感染（如柯萨奇病毒）可能触发免疫反应</li>
+                            <li>免疫系统异常：产生针对β细胞的自身抗体</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="content-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-heartbeat"></i>
+                        临床表现
+                    </h3>
+                    <div class="section-content">
+                        <p>症状通常在儿童或青少年时期突然出现，进展迅速：</p>
+                        <ul>
+                            <li>多饮、多尿、多食</li>
+                            <li>体重显著下降</li>
+                            <li>疲劳乏力</li>
+                            <li>视力模糊</li>
+                            <li>酮症酸中毒风险高</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="content-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-pills"></i>
+                        治疗方案
+                    </h3>
+                    <div class="section-content">
+                        <p>终身依赖外源性胰岛素治疗：</p>
+                        <ul>
+                            <li>每日多次胰岛素注射</li>
+                            <li>胰岛素泵治疗</li>
+                            <li>严格的血糖监测</li>
+                            <li>饮食管理和规律运动</li>
+                            <li>定期监测糖化血红蛋白</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 底部导航 -->
+    <nav class="tab-bar">
+        <div class="tab-item" onclick="window.location.href='index.html'">
+            <i class="fas fa-home"></i>
+            <span>首页</span>
+        </div>
+        <div class="tab-item">
+            <i class="fas fa-file-medical"></i>
+            <span>方案定制</span>
+        </div>
+        <div class="tab-item">
+            <i class="fas fa-heart"></i>
+            <span>生活习惯</span>
+        </div>
+        <div class="tab-item">
+            <i class="fas fa-robot"></i>
+            <span>A助手</span>
+        </div>
+        <div class="tab-item">
+            <i class="fas fa-user"></i>
+            <span>个人中心</span>
+        </div>
+    </nav>
+    
+    <script>
+        // 处理返回逻辑
+        function handleBack() {
+            // 如果历史记录只有当前页面，则跳转到首页
+            if (window.history.length <= 2) {
+                window.location.href = 'index.html';
+            } else {
+                window.history.back();
+            }
+        }
+    </script>
+    <script src="js/cacheManager.js"></script>
+    <script src="js/navbarToggle.js"></script>
+</body>
+</html>

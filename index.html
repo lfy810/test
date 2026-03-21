@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="糖尿病预治智能助手提供专业的糖尿病预防、治疗和管理服务，包含健康科普、医师咨询、饮食管理等功能">
+    <meta name="keywords" content="糖尿病,糖尿病预防,糖尿病治疗,血糖监测,健康管理">
+    <meta name="author" content="糖尿病预治智能助手">
+    <title>糖尿病预治智能助手</title>
+    <link rel="preconnect" href="https://static.mastergo.com">
+    <link rel="stylesheet" href="https://static.mastergo.com/static/ai/resource/html/googleapis/css2">
+    <link rel="stylesheet" href="css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f8fafc 100%);
+            color: #1e293b;
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 750px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            padding-bottom: 64px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.05);
+            border-radius: 0 0 20px 20px;
+        }
+        
+        /* 顶部导航栏 */
+        .top-bar {
+            background: linear-gradient(135deg, #0369a1, #0ea5e9);
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 20px rgba(3, 105, 161, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            font-size: 15px;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+            width: 110px;
+            white-space: nowrap;
+        }
+        
+        .logo img {
+            width: 20px !important;
+            height: 20px !important;
+        }
+        
+        .search-box {
+            flex: 2;
+            margin: 0 12px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 8px 16px 8px 36px;
+            border: none;
+            border-radius: 20px;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+        
+        /* 搜索建议 */
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-top: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .suggestion-item {
+            padding: 12px 16px;
+            font-size: 14px;
+            color: #1e293b;
+            cursor: pointer;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+        
+        .suggestion-item:hover {
+            background: #f8fafc;
+        }
+        
+        .user-icon {
+            color: white;
+            font-size: 24px;
+        }
+        
+/* 轮播图 */
+.carousel-container {
+    height: 200px;
+    margin: 16px;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
+
+.carousel {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.carousel-inner {
+    display: flex;
+    transition: transform 0.5s ease;
+    width: 300%;
+}
+
+.carousel-item {
+    width: 100%;
+    position: relative;
+}
+
+.carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+    background: linear-gradient(135deg,#f0f9ff,#e0f2fe);
+}
+
+.carousel-item:hover img,
+.carousel-item:active img {
+    transform: scale(1.05);
+}
+
+.carousel-text {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    background: rgba(255,255,255,0.95);
+    color: #0369a1;
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+/* 轮播控制按钮 */
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.8);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+
+.carousel-btn:active {
+    background: #fff;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.prev-btn { left: 12px; }
+.next-btn { right: 12px; }
+
+.carousel-btn i {
+    color: #0369a1;
+    font-size: 18px;
+}
+
+/* 轮播指示器 */
+.carousel-indicators {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+}
+
+.indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.indicator.active {
+    background: #fff;
+    width: 28px;
+    border-radius: 4px;
+}
+        
+/* 医师团队 */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 6px;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1e293b;
+    position: relative;
+    padding-left: 24px;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.section-title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 24px;
+    background: linear-gradient(180deg,#0369a1,#0ea5e9);
+    border-radius: 2px;
+}
+
+.more-btn {
+    padding: 8px 16px;
+    background: linear-gradient(135deg,rgba(3,105,161,0.1),rgba(14,165,233,0.1));
+    color: #0369a1;
+    border: 1px solid rgba(3,105,161,0.3);
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.more-btn:active {
+    background: linear-gradient(135deg,#0369a1,#0ea5e9);
+    color: #fff;
+    border-color: transparent;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(3,105,161,0.3);
+}
+        
+.doctor-list{display:flex;gap:16px;padding:0 24px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;margin-bottom:16px}
+.doctor-list::-webkit-scrollbar{display:none}
+.doctor-card{flex:0 0 120px;background:linear-gradient(135deg,#fff,#f8fafc);border-radius:8px;padding:12px;box-shadow:0 4px 20px rgba(0,0,0,0.08);border:1px solid rgba(3,105,161,0.1);cursor:pointer;transition:all .3s ease;position:relative;overflow:hidden}
+.doctor-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#0369a1,#0ea5e9);opacity:0;transition:opacity .3s ease}
+.doctor-card:hover,.doctor-card:active{transform:translateY(-4px);box-shadow:0 12px 32px rgba(3,105,161,0.15);border-color:#0ea5e9}
+.doctor-card:hover::before,.doctor-card:active::before{opacity:1}
+.doctor-avatar{width:50px;height:50px;border-radius:50%;margin:0 auto 8px;overflow:hidden;border:3px solid rgba(3,105,161,0.1);transition:all .3s ease;animation:ripple 8s ease-in-out infinite}
+.doctor-card:hover .doctor-avatar,.doctor-card:active .doctor-avatar{border-color:#0ea5e9;transform:scale(1.05)}
+.doctor-avatar img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s ease}
+.doctor-name{font-size:14px;font-weight:600;text-align:center;margin-bottom:6px;color:#0369a1}
+.doctor-dept{font-size:12px;color:#475569;text-align:center;margin-bottom:12px;font-weight:500}
+.consult-btn{width:100%;padding:8px;background:linear-gradient(135deg,#0369a1,#0ea5e9);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all .3s ease;box-shadow:0 4px 16px rgba(3,105,161,0.3);position:relative;overflow:hidden}
+.consult-btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);transition:left .5s ease}
+.consult-btn:active{background:linear-gradient(135deg,#075985,#0369a1);transform:translateY(-2px);box-shadow:0 6px 20px rgba(3,105,161,0.4)}
+.consult-btn:active::before{left:100%}
+        
+/* 健康科普 */
+.article-list{padding:0 24px;margin-bottom:32px}
+.article-card{background:linear-gradient(135deg,#fff,#f8fafc);border-radius:12px;padding:16px;margin-bottom:16px;box-shadow:0 4px 20px rgba(0,0,0,0.08);border:1px solid rgba(3,105,161,0.1);display:flex;gap:16px;cursor:pointer;transition:all .3s ease;position:relative;overflow:hidden}
+.article-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:linear-gradient(180deg,#0369a1,#0ea5e9);opacity:0;transition:opacity .3s ease}
+.article-card:hover,.article-card:active{transform:translateY(-4px);box-shadow:0 12px 32px rgba(3,105,161,0.15);border-color:#0ea5e9}
+.article-card:hover::before,.article-card:active::before{opacity:1}
+.article-image{width:80px;height:60px;border-radius:8px;overflow:hidden;flex-shrink:0;box-shadow:0 4px 16px rgba(0,0,0,0.1);transition:all .3s ease;animation:ripple 8s ease-in-out infinite}
+.article-card:hover .article-image{box-shadow:0 8px 24px rgba(3,105,161,0.2)}
+.article-image img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+.article-content{flex:1}
+.article-title{font-size:16px;font-weight:600;color:#0369a1;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.3}
+.article-summary{font-size:14px;color:#475569;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.3}
+.article-stats{display:flex;align-items:center;font-size:12px;color:#64748b;gap:12px}
+        
+/* 糖尿病类型 */
+.diabetes-types{padding:0 24px;margin-bottom:32px}
+.type-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.type-card{background:linear-gradient(135deg,#fff,#f8fafc);border-radius:12px;padding:16px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.08);border:1px solid rgba(3,105,161,0.1);cursor:pointer;transition:all .3s ease;position:relative;overflow:hidden}
+.type-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#0369a1,#0ea5e9);opacity:0;transition:opacity .3s ease}
+.type-card:hover,.type-card:active{transform:translateY(-4px);box-shadow:0 12px 32px rgba(3,105,161,0.15);border-color:#0ea5e9}
+.type-card:hover::before,.type-card:active::before{opacity:1}
+.type-image{width:70px;height:70px;border-radius:50%;margin:0 auto 12px;overflow:hidden;border:3px solid rgba(3,105,161,0.1);transition:all .3s ease;animation:ripple 8s ease-in-out infinite}
+.type-card:hover .type-image,.type-card:active .type-image{border-color:#0ea5e9;transform:scale(1.05)}
+.type-image img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s ease}
+.type-name{font-size:16px;font-weight:600;color:#0369a1;margin-bottom:8px}
+.type-desc{font-size:14px;color:#475569;font-weight:500}
+        
+/* 底部导航 */
+.tab-bar{position:fixed;bottom:0;width:100%;max-width:750px;height:70px;background:linear-gradient(180deg,#fff,#f8fafc);border-top:1px solid rgba(3,105,161,0.1);display:flex;justify-content:space-around;align-items:center;z-index:100;box-shadow:0 -4px 20px rgba(0,0,0,0.05)}
+.tab-item{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;color:#64748b;padding:6px 8px;border-radius:8px;transition:all .3s ease;position:relative}
+.tab-item.active{background:linear-gradient(135deg,#0369a1,#0ea5e9);color:#fff;box-shadow:0 4px 16px rgba(3,105,161,0.3)}
+.tab-item i{font-size:22px;transition:transform .3s ease}
+.tab-item:active i{transform:translateY(-2px)}
+        
+        /* 前后浮动动画 */
+        @keyframes float {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.08);
+            }
+        }
+        
+        /* 浅蓝到白色涟漪动画 - 柔和呼吸效果 */
+        @keyframes ripple {
+            0% {
+                transform: scale(1);
+                box-shadow: 
+                    0 0 15px rgba(14, 165, 233, 0.6),
+                    0 0 30px rgba(14, 165, 233, 0.3),
+                    0 0 45px rgba(14, 165, 233, 0.1);
+            }
+            50% {
+                transform: scale(1.1);
+                box-shadow: 
+                    0 0 25px rgba(255, 255, 255, 0.9),
+                    0 0 50px rgba(255, 255, 255, 0.5),
+                    0 0 75px rgba(255, 255, 255, 0.3);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 
+                    0 0 15px rgba(14, 165, 233, 0.6),
+                    0 0 30px rgba(14, 165, 233, 0.3),
+                    0 0 45px rgba(14, 165, 233, 0.1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部导航栏 -->
+        <header class="top-bar">
+            <div class="logo">
+                <img src="img/logo_notext.png" alt="Logo" width="24" height="24" loading="lazy">
+                <span>糖尿病助手</span>
+            </div>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="搜索健康知识、医师..." onkeypress="handleSearch(event)" oninput="handleRealTimeSearch(event)">
+                <div id="searchSuggestions" class="search-suggestions"></div>
+            </div>
+            <div class="user-icon">
+                <img src="img/user_icon.png" alt="用户" width="24" height="24" loading="lazy">
+            </div>
+        </header>
+        
+        <main>
+            <!-- 轮播图 -->
+            <section class="carousel-container">
+                <div class="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active" onclick="window.location.href='diabetes-education.html'">
+                            <img src="img/lb1.png" alt="糖尿病预防" loading="lazy">
+                            <div class="carousel-text">了解糖尿病预防</div>
+                        </div>
+                        <div class="carousel-item" onclick="window.location.href='article.html'">
+                            <img src="img/lb2.png" alt="健康饮食" loading="lazy">
+                            <div class="carousel-text">健康饮食管理</div>
+                        </div>
+                        <div class="carousel-item" onclick="window.location.href='glucose-monitoring.html'">
+                            <img src="img/lb3.jpeg" alt="血糖监测" loading="lazy">
+                            <div class="carousel-text">科学血糖监测</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 左右控制按钮 -->
+                    <button class="carousel-btn prev-btn" onclick="changeSlide(-1)">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="carousel-btn next-btn" onclick="changeSlide(1)">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    
+                    <!-- 指示器 -->
+                    <div class="carousel-indicators">
+                        <span class="indicator active" onclick="goToSlide(0)"></span>
+                        <span class="indicator" onclick="goToSlide(1)"></span>
+                        <span class="indicator" onclick="goToSlide(2)"></span>
+                    </div>
+                </div>
+            </section>
+        
+        <!-- 专业医师团队 -->
+        <section>
+            <div class="section-header">
+                <h2 class="section-title fade-in">专业医师团队</h2>
+                <button class="more-btn fade-in" onclick="window.location.href='doctors.html'">更多</button>
+            </div>
+            <div class="doctor-list">
+                <div class="doctor-card fade-in fade-in-delay-1" onclick="window.location.href='doctor-zhang.html'">
+                    <div class="doctor-avatar">
+                        <img src="img/doc1.jpg" alt="张伟明" class="w-full h-full object-cover rounded-full" loading="lazy">
+                    </div>
+                    <div class="doctor-name">张伟明</div>
+                    <div class="doctor-dept">内分泌科<br>主任医师</div>
+                    <button class="consult-btn">立即咨询</button>
+                </div>
+                <div class="doctor-card fade-in fade-in-delay-2" onclick="window.location.href='doctor-li.html'">
+                    <div class="doctor-avatar">
+                        <img src="img/doc2.png" alt="李雅琴" class="w-full h-full object-cover rounded-full" loading="lazy">
+                    </div>
+                    <div class="doctor-name">李雅琴</div>
+                    <div class="doctor-dept">内分泌科<br>副主任医师</div>
+                    <button class="consult-btn">立即咨询</button>
+                </div>
+                <div class="doctor-card fade-in fade-in-delay-3" onclick="window.location.href='doctor-wang.html'">
+                    <div class="doctor-avatar">
+                        <img src="img/doc3.png" alt="王建国" class="w-full h-full object-cover rounded-full" loading="lazy">
+                    </div>
+                    <div class="doctor-name">王建国</div>
+                    <div class="doctor-dept">内分泌科<br>主治医师</div>
+                    <button class="consult-btn">立即咨询</button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 健康科普栏 -->
+        <section>
+            <div class="section-header">
+                <h2 class="section-title fade-in">健康科普</h2>
+                <button class="more-btn fade-in" onclick="window.location.href='articles.html'">更多</button>
+            </div>
+            <div class="article-list">
+                <div class="article-card fade-in fade-in-delay-1" onclick="window.location.href='article.html'">
+                    <div class="article-image">
+                        <img src="img/a1.jpg" alt="饮食管理" class="w-full h-full object-cover rounded-lg" loading="lazy">
+                    </div>
+                    <div class="article-content">
+                        <div class="article-title">糖尿病患者的饮食管理指南</div>
+                        <div class="article-summary">科学的饮食控制是糖尿病管理的重要环节，合理搭配食物，控制总热量摄入...</div>
+                        <div class="article-stats">
+                            <i class="fas fa-eye"></i>
+                            <span>1.2万</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="article-card fade-in fade-in-delay-2" onclick="window.location.href='exercise.html'">
+                    <div class="article-image">
+                        <img src="img/a2.jpg" alt="运动方式" class="w-full h-full object-cover rounded-lg" loading="lazy">
+                    </div>
+                    <div class="article-content">
+                        <div class="article-title">适合糖尿病患者的运动方式</div>
+                        <div class="article-summary">适量的运动有助于血糖控制和身体健康，选择适合自己的运动方式很重要...</div>
+                        <div class="article-stats">
+                            <i class="fas fa-eye"></i>
+                            <span>8,500</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="article-card fade-in fade-in-delay-3" onclick="window.location.href='glucose-monitoring.html'">
+                    <div class="article-image">
+                        <img src="img/a3.jpg" alt="血糖监测" class="w-full h-full object-cover rounded-lg" loading="lazy">
+                    </div>
+                    <div class="article-content">
+                        <div class="article-title">血糖监测的正确方法</div>
+                        <div class="article-summary">掌握正确的血糖监测技巧对病情控制至关重要，了解不同时间点监测的意义...</div>
+                        <div class="article-stats">
+                            <i class="fas fa-eye"></i>
+                            <span>6,300</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 糖尿病类型栏 -->
+        <section>
+            <div class="section-header">
+                <h2 class="section-title fade-in">了解糖尿病</h2>
+                <button class="more-btn fade-in" onclick="window.location.href='type1.html'">查看全部</button>
+            </div>
+            <div class="diabetes-types">
+                <div class="type-grid">
+                    <div class="type-card fade-in fade-in-delay-1" onclick="window.location.href='type1.html'">
+                        <div class="type-image">
+                            <img src="img/tnb1.png" alt="1型糖尿病" class="w-full h-full object-cover rounded-full" loading="lazy">
+                        </div>
+                        <div class="type-name">1型糖尿病</div>
+                        <div class="type-desc">胰岛素依赖型糖尿病</div>
+                    </div>
+                    <div class="type-card fade-in fade-in-delay-2" onclick="window.location.href='type2.html'">
+                        <div class="type-image">
+                            <img src="img/tnb2.png" alt="2型糖尿病" class="w-full h-full object-cover rounded-full" loading="lazy">
+                        </div>
+                        <div class="type-name">2型糖尿病</div>
+                        <div class="type-desc">最常见的糖尿病类型</div>
+                    </div>
+                    <div class="type-card fade-in fade-in-delay-3" onclick="window.location.href='type-pregnancy.html'">
+                        <div class="type-image">
+                            <img src="img/tnb3.png" alt="妊娠糖尿病" class="w-full h-full object-cover rounded-full" loading="lazy">
+                        </div>
+                        <div class="type-name">妊娠糖尿病</div>
+                        <div class="type-desc">孕期发生的血糖异常</div>
+                    </div>
+                    <div class="type-card fade-in fade-in-delay-4" onclick="window.location.href='type-other.html'">
+                        <div class="type-image">
+                            <img src="img/tnb4.png" alt="其他类型" class="w-full h-full object-cover rounded-full" loading="lazy">
+                        </div>
+                        <div class="type-name">其他类型</div>
+                        <div class="type-desc">特殊类型的糖尿病</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        </main>
+    </div>
+    
+    <!-- 底部导航 -->
+    <nav class="tab-bar">
+        <div class="tab-item active">
+            <i class="fas fa-home"></i>
+            <span>首页</span>
+        </div>
+        <div class="tab-item">
+            <i class="fas fa-file-medical"></i>
+            <span>方案定制</span>
+        </div>
+        <div class="tab-item">
+            <i class="fas fa-heart"></i>
+            <span>生活习惯</span>
+        </div>
+        <div class="tab-item">
+            <i class="fas fa-robot"></i>
+            <span>A助手</span>
+        </div>
+        <div class="tab-item">
+            <i class="fas fa-user"></i>
+            <span>个人中心</span>
+        </div>
+    </nav>
+
+    <script>
+        // 底部导航切换
+const tabItems=document.querySelectorAll('.tab-item');
+tabItems.forEach(item=>{
+    item.addEventListener('click',()=>{
+        tabItems.forEach(tab=>tab.classList.remove('active'));
+        item.classList.add('active');
+    });
+});
+
+// 咨询按钮点击事件
+const consultBtns=document.querySelectorAll('.consult-btn');
+consultBtns.forEach(btn=>{
+    btn.addEventListener('click',()=>{
+        alert('咨询功能即将上线，敬请期待！');
+    });
+});
+
+// 搜索功能
+function handleSearch(event){
+    if(event.key==='Enter'){
+        const keyword=event.target.value.trim();
+        if(keyword){
+            window.location.href = `search-results.html?keyword=${encodeURIComponent(keyword)}`;
+        }
+    }
+}
+
+// 实时搜索功能
+async function handleRealTimeSearch(event){
+    const keyword=event.target.value.trim();
+    const suggestionsContainer=document.getElementById('searchSuggestions');
+    if(keyword.length===0){
+        suggestionsContainer.style.display='none';
+        return;
+    }
+    try{
+        const searchData=await dataService.getSearchData();
+        const allSuggestions=[];
+        searchData.articles.forEach(article=>{
+            if(article.title.toLowerCase().includes(keyword.toLowerCase())){
+                allSuggestions.push({type:'article',title:article.title,url:article.url});
+            }
+        });
+        searchData.doctors.forEach(doctor=>{
+            if(doctor.name.toLowerCase().includes(keyword.toLowerCase())){
+                allSuggestions.push({type:'doctor',title:doctor.name,url:doctor.url});
+            }
+        });
+        searchData.types.forEach(type=>{
+            if(type.name.toLowerCase().includes(keyword.toLowerCase())){
+                allSuggestions.push({type:'type',title:type.name,url:type.url});
+            }
+        });
+        const limitedSuggestions=allSuggestions.slice(0,5);
+        if(limitedSuggestions.length>0){
+            suggestionsContainer.innerHTML='';
+            limitedSuggestions.forEach(suggestion=>{
+                const item=document.createElement('div');
+                item.className='suggestion-item';
+                item.textContent=suggestion.title;
+                item.onclick=()=>window.location.href=suggestion.url;
+                suggestionsContainer.appendChild(item);
+            });
+            suggestionsContainer.style.display='block';
+        }else{
+            suggestionsContainer.style.display='none';
+        }
+    }catch(error){
+        console.error('搜索数据获取失败:',error);
+        suggestionsContainer.style.display='none';
+    }
+}
+
+// 点击页面其他地方关闭搜索建议
+document.addEventListener('click',event=>{
+    const searchBox=document.querySelector('.search-box');
+    const suggestionsContainer=document.getElementById('searchSuggestions');
+    if(!searchBox.contains(event.target)){
+        suggestionsContainer.style.display='none';
+    }
+});
+
+// 轮播图功能
+let currentSlide=0,totalSlides=3,slideInterval;
+
+function initCarousel(){
+    updateSlide();
+    startSlideInterval();
+}
+
+function updateSlide(){
+    const carouselInner=document.querySelector('.carousel-inner');
+    const indicators=document.querySelectorAll('.indicator');
+    carouselInner.style.transform=`translateX(-${currentSlide*33.33}%)`;
+    indicators.forEach((indicator,index)=>{
+        indicator.classList.toggle('active',index===currentSlide);
+    });
+}
+
+function goToSlide(index){
+    currentSlide=index;
+    updateSlide();
+    resetSlideInterval();
+}
+
+function changeSlide(direction){
+    currentSlide+=direction;
+    if(currentSlide<0)currentSlide=totalSlides-1;
+    else if(currentSlide>=totalSlides)currentSlide=0;
+    updateSlide();
+    resetSlideInterval();
+}
+
+function startSlideInterval(){
+    slideInterval=setInterval(()=>changeSlide(1),5000);
+}
+
+function resetSlideInterval(){
+    clearInterval(slideInterval);
+    startSlideInterval();
+}
+
+// 滑动事件处理
+function initSwipeEvents(){
+    const carouselContainer=document.querySelector('.carousel-container');
+    const carouselInner=document.querySelector('.carousel-inner');
+    let startX,lastX,isDragging=false,currentTranslate=0,totalDiff=0;
+    
+    carouselContainer.addEventListener('touchstart',e=>{
+        startX=e.touches[0].clientX;
+        lastX=startX;
+        isDragging=true;
+        totalDiff=0;
+        clearInterval(slideInterval);
+        const style=window.getComputedStyle(carouselInner);
+        const transform=style.transform;
+        if(transform!=='none'){
+            const matrix=new DOMMatrix(transform);
+            currentTranslate=matrix.e;
+        }else{
+            currentTranslate=0;
+        }
+    });
+    
+    carouselContainer.addEventListener('touchmove',e=>{
+        if(!isDragging)return;
+        e.preventDefault();
+        const currentX=e.touches[0].clientX;
+        const diff=lastX-currentX;
+        totalDiff+=diff;
+        lastX=currentX;
+        carouselInner.style.transform=`translateX(${currentTranslate-totalDiff}px)`;
+    });
+    
+    carouselContainer.addEventListener('touchend',e=>{
+        if(!isDragging)return;
+        isDragging=false;
+        const swipeThreshold=50;
+        if(Math.abs(totalDiff)>swipeThreshold){
+            changeSlide(totalDiff>0?1:-1);
+        }else{
+            carouselInner.style.transition='transform 0.3s ease';
+            carouselInner.style.transform=`translateX(${currentTranslate}px)`;
+            setTimeout(()=>{
+                carouselInner.style.transition='';
+                startSlideInterval();
+            },300);
+        }
+    });
+}
+
+// 页面加载完成后初始化
+document.addEventListener('DOMContentLoaded',()=>{
+    initCarousel();
+    initSwipeEvents();
+});
+    </script>
+    <script src="js/cacheManager.js" defer></script>
+
+    <script src="js/navbarToggle.js" defer></script>
+</body>
+</html>

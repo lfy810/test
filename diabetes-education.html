@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>糖尿病科普 - 糖尿病预治智能助手</title>
+    <meta name="description" content="糖尿病科普知识，包括糖尿病的预防、治疗和管理方法，帮助患者更好地了解和应对糖尿病">
+    <meta name="keywords" content="糖尿病科普,糖尿病知识,糖尿病预防,糖尿病治疗">
+    <meta name="author" content="糖尿病预治智能助手">
+    <link rel="preconnect" href="https://static.mastergo.com">
+    <link rel="stylesheet" href="https://static.mastergo.com/static/ai/resource/html/googleapis/css2">
+    <link rel="stylesheet" href="css/all.min.css">
+    <style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);min-height:100vh;color:#1e293b}
+.container{max-width:750px;margin:0 auto;background:#fff;min-height:100vh;position:relative}
+        
+        /* 顶部导航栏 */
+        .top-bar {
+            height: 80px;
+            background: linear-gradient(135deg, #0369a1, #0ea5e9);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(3, 105, 161, 0.15);
+        }
+        
+        .back-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-2px);
+        }
+        
+        .back-btn i {
+            color: white;
+            font-size: 20px;
+        }
+        
+        .page-title {
+            flex: 1;
+            text-align: center;
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0 16px;
+        }
+        
+        /* 内容区域 */
+        .content {
+            padding: 24px;
+            padding-bottom: 100px;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(3, 105, 161, 0.1);
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #0369a1;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-title i {
+            font-size: 24px;
+        }
+        
+        .section-content {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #475569;
+        }
+        
+        .section-content p {
+            margin-bottom: 12px;
+        }
+        
+        .section-content h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0ea5e9;
+            margin: 20px 0 12px 0;
+        }
+        
+        .section-content ul {
+            margin: 12px 0;
+            padding-left: 24px;
+        }
+        
+        .section-content li {
+            margin-bottom: 8px;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border-left: 4px solid #0369a1;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 16px 0;
+        }
+        
+        .highlight-box p {
+            margin: 0;
+            color: #1e40af;
+            font-weight: 500;
+        }
+        
+        /* 底部导航 */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 750px;
+            height: 70px;
+            background: linear-gradient(180deg, #ffffff, #f8fafc);
+            border-top: 1px solid rgba(3, 105, 161, 0.1);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+        }
+        
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: #64748b;
+            padding: 6px 8px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .tab-item.active {
+            background: linear-gradient(135deg, #0369a1, #0ea5e9);
+            color: white;
+            box-shadow: 0 4px 16px rgba(3, 105, 161, 0.3);
+        }
+        
+        .tab-item i {
+            font-size: 22px;
+            transition: transform 0.3s ease;
+        }
+        
+        .tab-item:hover i {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部导航栏 -->
+        <header class="top-bar">
+            <div class="back-btn" onclick="handleBack()">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+            <div class="page-title">糖尿病科普</div>
+            <div style="width: 40px;"></div>
+        </header>
+        
+        <!-- 内容区域 -->
+        <div class="content">
+            <!-- 糖尿病介绍 -->
+            <section class="section">
+                <h2 class="section-title">
+                    <i class="fas fa-info-circle"></i>
+                    什么是糖尿病
+                </h2>
+                <div class="section-content">
+                    <p>糖尿病是一种慢性代谢性疾病，其特征是血糖水平持续升高。这是由于胰岛素分泌不足、胰岛素作用缺陷或两者同时存在导致的。</p>
+                    
+                    <h4>主要类型</h4>
+                    <ul>
+                        <li><strong>1型糖尿病：</strong>自身免疫性疾病，身体免疫系统破坏胰腺β细胞，导致胰岛素绝对缺乏</li>
+                        <li><strong>2型糖尿病：</strong>最常见类型，主要由胰岛素抵抗和胰岛素分泌不足引起，与生活方式密切相关</li>
+                        <li><strong>妊娠糖尿病：</strong>孕期发生的血糖异常，通常在分娩后恢复正常</li>
+                        <li><strong>其他特殊类型：</strong>由特定病因引起的罕见类型糖尿病</li>
+                    </ul>
+                    
+                    <div class="highlight-box">
+                        <p><i class="fas fa-exclamation-circle"></i> 糖尿病本身不可怕，可怕的是长期高血糖引起的各种并发症</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 预防糖尿病 -->
+            <section class="section">
+                <h2 class="section-title">
+                    <i class="fas fa-shield-alt"></i>
+                    如何预防糖尿病
+                </h2>
+                <div class="section-content">
+                    <h4>健康饮食</h4>
+                    <ul>
+                        <li>控制总热量摄入，保持健康体重</li>
+                        <li>多吃蔬菜、全谷物、豆类和水果</li>
+                        <li>选择低脂肪、低糖、高纤维的食物</li>
+                        <li>规律进餐，定时定量</li>
+                        <li>限制含糖饮料和甜食的摄入</li>
+                    </ul>
+                    
+                    <h4>规律运动</h4>
+                    <ul>
+                        <li>每周至少进行150分钟中等强度有氧运动</li>
+                        <li>快走、慢跑、游泳、骑自行车等都是很好的选择</li>
+                        <li>运动可以提高胰岛素敏感性</li>
+                        <li>饭后适当活动有助于控制血糖</li>
+                    </ul>
+                    
+                    <h4>健康生活方式</h4>
+                    <ul>
+                        <li>戒烟限酒</li>
+                        <li>保持充足睡眠</li>
+                        <li>管理压力</li>
+                        <li>定期体检，监测血糖</li>
+                    </ul>
+                    
+                    <h4>高危人群筛查</h4>
+                    <ul>
+                        <li>家族中有糖尿病患者</li>
+                        <li>超重或肥胖</li>
+                        <li>高血压、高血脂患者</li>
+                        <li>年龄在45岁以上</li>
+                        <li>缺乏运动的人群</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <!-- 糖尿病药物 -->
+            <section class="section">
+                <h2 class="section-title">
+                    <i class="fas fa-pills"></i>
+                    糖尿病药物治疗
+                </h2>
+                <div class="section-content">
+                    <h4>口服降糖药</h4>
+                    <ul>
+                        <li><strong>二甲双胍：</strong>一线药物，减少肝脏产生和释放葡萄糖，增加胰岛素敏感性</li>
+                        <li><strong>磺脲类：</strong>刺激胰岛素分泌，如格列美脲、格列齐特等</li>
+                        <li><strong>DPP-4抑制剂：</strong>延长体内自身肠促胰素的作用时间，如西格列汀、沙格列汀等</li>
+                        <li><strong>SGLT2抑制剂：</strong>通过肾脏排出多余糖分，如达格列净、恩格列净等</li>
+                        <li><strong>α-糖苷酶抑制剂：</strong>延缓碳水化合物吸收，如阿卡波糖、伏格列波糖</li>
+                    </ul>
+                    
+                    <h4>胰岛素治疗</h4>
+                    <ul>
+                        <li><strong>短效胰岛素：</strong>餐前30分钟注射，控制餐后血糖</li>
+                        <li><strong>速效胰岛素：</strong>餐前立即注射，起效更快</li>
+                        <li><strong>中效胰岛素：</strong>控制夜间和空腹血糖</li>
+                        <li><strong>长效胰岛素：</strong>提供基础胰岛素，平稳控制血糖</li>
+                        <li><strong>预混胰岛素：</strong>包含短效和中效成分，方便使用</li>
+                    </ul>
+                    
+                    <h4>GLP-1受体激动剂</h4>
+                    <ul>
+                        <li>模拟人体内一种肠道激素，促进胰岛素分泌，抑制食欲</li>
+                        <li>具有减重效果</li>
+                        <li>部分药物可降低心血管疾病风险</li>
+                        <li>通常为注射剂，部分有口服制剂</li>
+                    </ul>
+                    
+                    <div class="highlight-box">
+                        <p><i class="fas fa-prescription"></i> 所有药物都必须在医生指导下使用，不可自行调整剂量或停药</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 综合管理 -->
+            <section class="section">
+                <h2 class="section-title">
+                    <i class="fas fa-heartbeat"></i>
+                    糖尿病综合管理
+                </h2>
+                <div class="section-content">
+                    <p>糖尿病管理需要综合考虑多个方面：</p>
+                    
+                    <ul>
+                        <li><strong>血糖监测：</strong>定期监测血糖，了解血糖控制情况</li>
+                        <li><strong>饮食管理：</strong>合理控制饮食，选择健康食物</li>
+                        <li><strong>规律运动：</strong>适当的体育锻炼有助于控制血糖</li>
+                        <li><strong>药物治疗：</strong>按时服药或注射胰岛素</li>
+                        <li><strong>定期复查：</strong>定期到医院复查，调整治疗方案</li>
+                        <li><strong>健康教育：</strong>学习糖尿病相关知识，提高自我管理能力</li>
+                        <li><strong>心理调节：</strong>保持积极心态，避免焦虑和压力</li>
+                    </ul>
+                    
+                    <p>通过科学的管理和良好的生活习惯，糖尿病患者可以有效控制病情，预防并发症，提高生活质量。</p>
+                </div>
+            </section>
+        </div>
+        
+        <!-- 底部导航 -->
+        <nav class="tab-bar">
+            <div class="tab-item active" onclick="window.location.href='index.html'">
+                <i class="fas fa-home"></i>
+                <span>首页</span>
+            </div>
+            <div class="tab-item">
+                <i class="fas fa-file-medical"></i>
+                <span>方案定制</span>
+            </div>
+            <div class="tab-item">
+                <i class="fas fa-heart"></i>
+                <span>生活习惯</span>
+            </div>
+            <div class="tab-item">
+                <i class="fas fa-robot"></i>
+                <span>A助手</span>
+            </div>
+            <div class="tab-item">
+                <i class="fas fa-user"></i>
+                <span>个人中心</span>
+            </div>
+        </nav>
+    </div>
+    
+    <script>
+        // 处理返回逻辑
+        function handleBack() {
+            // 如果历史记录只有当前页面，则跳转到首页
+            if (window.history.length <= 2) {
+                window.location.href = 'index.html';
+            } else {
+                window.history.back();
+            }
+        }
+    </script>
+    <script src="js/cacheManager.js"></script>
+    <script src="js/navbarToggle.js"></script>
+</body>
+</html>

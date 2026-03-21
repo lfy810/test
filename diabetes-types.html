@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>糖尿病类型介绍 - 糖尿病预治智能助手</title>
+    <meta name="description" content="糖尿病类型介绍，包括1型糖尿病、2型糖尿病、妊娠糖尿病和其他特殊类型糖尿病的详细说明">
+    <meta name="keywords" content="糖尿病类型,1型糖尿病,2型糖尿病,妊娠糖尿病,特殊类型糖尿病">
+    <meta name="author" content="糖尿病预治智能助手">
+    <link rel="preconnect" href="https://static.mastergo.com">
+    <link rel="stylesheet" href="https://static.mastergo.com/static/ai/resource/html/googleapis/css2">
+    <link rel="stylesheet" href="css/all.min.css">
+    <style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'PingFang SC','Helvetica Neue',Arial,sans-serif;background:#f8fafc;color:#333;line-height:1.6}
+.container{max-width:750px;margin:0 auto;background:#fff;min-height:100vh;padding-bottom:64px}
+        
+/* 顶部导航栏 */
+.top-bar{background:linear-gradient(135deg,#3b82f6,#60a5fa);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(59,130,246,0.1);position:sticky;top:0;z-index:100}
+.back-btn{color:#fff;font-size:20px;cursor:pointer}
+.page-title{font-size:18px;font-weight:bold;color:#fff}
+.share-btn{color:#fff;font-size:20px;cursor:pointer}
+        
+/* 内容区域 */
+.content{padding:20px}
+.main-title{font-size:24px;font-weight:700;color:#1e293b;margin-bottom:24px;text-align:center}
+/* 类型卡片 */
+.type-card{background:#fff;border-radius:16px;padding:24px;margin-bottom:20px;box-shadow:0 4px 12px rgba(0,0,0,0.05);border:1px solid #f1f5f9}
+.type-header{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.type-image{width:80px;height:80px;border-radius:50%;overflow:hidden;flex-shrink:0}
+.type-image img{width:100%;height:100%;object-fit:cover}
+.type-info h2{font-size:20px;font-weight:600;color:#1e293b;margin-bottom:4px}
+.type-info p{font-size:14px;color:#64748b}
+        
+/* 内容区块 */
+.content-section{margin-bottom:24px}
+.section-title{font-size:16px;font-weight:600;color:#3b82f6;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.section-title i{font-size:14px}
+.section-content{font-size:14px;color:#475569;line-height:1.7}
+.section-content p{margin-bottom:12px}
+.section-content ul{margin:12px 0;padding-left:20px}
+.section-content li{margin-bottom:8px}
+        
+/* 特征标签 */
+.feature-tags{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.tag{padding:6px 12px;background:rgba(59,130,246,0.1);color:#3b82f6;border-radius:16px;font-size:12px;font-weight:500}
+/* 底部导航 */
+.tab-bar{position:fixed;bottom:0;width:100%;max-width:750px;height:64px;background:#fff;border-top:1px solid #e5e7eb;display:flex;justify-content:space-around;align-items:center;z-index:100}
+.tab-item{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;color:#64748b;padding:8px 16px;border-radius:8px;transition:all .2s}
+.tab-item.active{background:rgba(59,130,246,0.1);color:#3b82f6}
+.tab-item i{font-size:20px}
+        
+/* 统计信息 */
+.stats-section{background:linear-gradient(135deg,#3b82f6,#60a5fa);color:#fff;border-radius:16px;padding:24px;margin-bottom:24px}
+.stats-title{font-size:18px;font-weight:600;margin-bottom:16px;text-align:center}
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.stat-item{text-align:center}
+.stat-number{font-size:24px;font-weight:700;margin-bottom:4px}
+.stat-label{font-size:14px;opacity:.9}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部导航栏 -->
+        <header class="top-bar">
+            <div class="back-btn" onclick="handleBack()">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+            <div class="page-title">糖尿病类型</div>
+            <div class="share-btn">
+                <i class="fas fa-share-alt"></i>
+            </div>
+        </header>
+        
+        <!-- 内容区域 -->
+        <div class="content">
+            <h1 class="main-title">糖尿病类型详解</h1>
+            
+            <!-- 统计信息 -->
+            <div class="stats-section">
+                <h2 class="stats-title">全球糖尿病现状</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number">4.6亿</div>
+                        <div class="stat-label">全球患者</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">90%</div>
+                        <div class="stat-label">2型糖尿病</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">10%</div>
+                        <div class="stat-label">1型糖尿病</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">2100万</div>
+                        <div class="stat-label">孕妇患者</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 1型糖尿病 -->
+            <div class="type-card">
+                <div class="type-header">
+                    <div class="type-image">
+                        <img src="img/tnb1.png" alt="1型糖尿病">
+                    </div>
+                    <div class="type-info">
+                        <h2>1型糖尿病</h2>
+                        <p>胰岛素依赖型糖尿病</p>
+                    </div>
+                </div>
+                
+                <div class="feature-tags">
+                    <span class="tag">青少年发病</span>
+                    <span class="tag">自身免疫性疾病</span>
+                    <span class="tag">胰岛素绝对缺乏</span>
+                </div>
+                
+                <div class="content-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-disease"></i>
+                        发病机制
+                    </h3>
+                    <div class="section-content">
+                        <p>1型糖尿病是一种自身免疫性疾病，身体的免疫系统错误地攻击并破坏了胰腺中产生胰岛素的β细胞。随着β细胞的逐渐破坏，胰岛素分泌能力完全丧失，导致血糖无法被有效调节。</p>
+                        <ul>
+                            <li>遗传因素：与HLA基因密切相关</li>
+                            <li>环境因素：病毒感染（如柯萨奇病毒）可能触发免疫反应</li>
+                            <li>免疫系统异常：产生针对β细胞的自身抗体</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="content-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-heartbeat"></i>
+                        临床表现
+                    </h3>
+                    <div class="section-content">
+                        <p>症状通常在儿童或青少年时期突然出现，进展迅速：</p>
+                        <ul>
+                            <li>多饮、多尿、多食</li>
+                            <li>体重显著下降</li>
+                            <li>疲劳乏力</li>
+                            <li>视力模糊</li>
+                            <li>酮症酸中毒风险高</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="content-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-pills"></i>
+                        治疗方案
+                    </h3>
+                    <div class="section-content">
+                        <p>终身依赖外源性胰岛素治疗：</p>
+                        <ul>
+                            <li>每日多次胰岛素注射</li>
+                            <li>胰岛素泵治疗</li>
+                            <li>严格的血糖监测</li>
+                            <li>饮食管理和规律运动</li>
+                            <li>定期监测糖化血红蛋白</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 2型糖尿病 -->
+            <div class="type-card">
+                <div class="type-header">
+                    <div class="type-image">
+                        <img src="img/tnb2.png" alt="2型糖尿病">
+                    </div>
+                    <div class="type-info">
+                        <h2>2型糖尿病</h2>
+                        <p>最常见的糖尿病类型</p>
+                    </div>
+                </div>
+                
+                <div class="feature-tags">
+                    <span class="tag">中老年发病</span>
+                    <span class="tag">胰岛素抵抗</span>
+                    <span class="tag">生活方式相关</span>
+                </div>
+                
+                <div class="content-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-disease"></i>
+                        发病机制
+                    </h3>
+                    <div class="section-content">
+                        <p>2型糖尿病的核心问题是胰岛素抵抗，身体细胞对胰岛素的敏感性下降，导致胰岛素无法有效降低血糖。初期胰腺会代偿性分泌更多胰岛素，后期β细胞功能逐渐衰竭。</p>
+                        <ul>
+                            <li>胰岛素抵抗：肌肉、肝脏、脂肪细胞对胰岛素反应迟钝</li>
+                            <li>肥胖：特别是腹部肥胖是主要危险因素</li>
+                            <li>遗传因素：家族史是重要风险因素</li>
+                            <li>生活方式：缺乏运动、不健康饮食</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="content-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-heartbeat"></i>
+                        临床表现
+                    </h3>
+                    <div class="section-content">
+                        <p>症状通常缓慢出现，早期可能无明显症状：</p>
+                        <ul>
+                            <li>多饮、多尿、多食</li>
+                            <li>体重增加或下降不明显</li>
+                            <li>疲劳、乏力</li>
+                            <li>伤口愈合缓慢</li>
+                            <li>反复感染</li>
+                            <li>视力模糊</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="content-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-pills"></i>
+                        治疗方案
+                    </h3>
+                    <div class="section-content">
+                        <p>综合治疗方案：</p>
+                        <ul>
+                            <li>生活方式干预：饮食控制、规律运动、体重管理</li>
+                            <li>口服降糖药：二甲双胍、磺脲类、DPP-4抑制剂等</li>
+                            <li>胰岛素治疗：晚期或口服药效果不佳时</li>
+                            <li>血糖监测和定期复查</li>
+                            <li>并发症筛查</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 妊娠糖尿病 -->
+            <div class="type-card">
+                <div class="type-header">
+                    <div class="type-image">
+                        <img src="img/tnb3.png" alt="妊娠糖尿病">
+                    </div>
+                    <div class="type-info">
+                        <h2>妊娠糖尿病</h2>
+                        <p>孕期发生的血糖异常</p>
+                    </div>
+                </div>
+                
+                <div class="feature-tags">
+                    <span class="tag">孕期特有</span>
+                    <span class="tag">激素变化</span>
+                    <span class="tag">母婴风险</span>
+                </div>
+                
+                <div class="content-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-disease"></i>
+                        发病机制
+                    </h3>
+                    <div class="section-content">
+                        <p>孕期胎盘产生的激素（如雌激素、孕激素、皮质醇等）会拮抗胰岛素的作用，导致胰岛素抵抗增加。如果孕妇的胰腺功能不足以代偿这种抵抗，就会发生妊娠糖尿病。</p>
+                        <ul>
+                            <li>胎盘激素的抗胰岛素作用</li>
+                            <li>遗传因素和家族史</li>
+                            <li>孕前肥胖</li>
+                            <li>高龄妊娠</li>
+                            <li>既往妊娠糖尿病史</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="content-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-heartbeat"></i>
+                        临床表现
+                    </h3>
+                    <div class="section-content">
+                        <p>多数患者无明显症状，通常通过孕期筛查发现：</p>
+                        <ul>
+                            <li>可能出现多饮、多尿</li>
+                            <li>反复阴道感染</li>
+                            <li>羊水过多</li>
+                            <li>巨大胎儿</li>
+                            <li>早产风险增加</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="content-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-pills"></i>
+                        治疗方案
+                    </h3>
+                    <div class="section-content">
+                        <p>孕期管理方案：</p>
+                        <ul>
+                            <li>饮食管理：控制总热量，均衡营养</li>
+                            <li>适当运动：散步、孕妇瑜伽等</li>
+                            <li>血糖监测：每日监测4-7次</li>
+                            <li>胰岛素治疗：饮食和运动控制不佳时</li>
+                            <li>定期产检和胎儿监测</li>
+                            <li>产后随访：产后6-12周复查</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 其他类型糖尿病 -->
+            <div class="type-card">
+                <div class="type-header">
+                    <div class="type-image">
+                        <img src="img/tnb4.png" alt="其他类型">
+                    </div>
+                    <div class="type-info">
+                        <h2>其他特殊类型</h2>
+                        <p>罕见类型的糖尿病</p>
+                    </div>
+                </div>
+                
+                <div class="feature-tags">
+                    <span class="tag">病因明确</span>
+                    <span class="tag">罕见类型</span>
+                    <span class="tag">特殊治疗</span>
+                </div>
+                
+                <div class="content-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-disease"></i>
+                        主要类型
+                    </h3>
+                    <div class="section-content">
+                        <ul>
+                            <li><strong>遗传缺陷：</strong>MODY（青少年发病的成人型糖尿病）、线粒体糖尿病</li>
+                            <li><strong>胰腺疾病：</strong>胰腺炎、胰腺切除、囊性纤维化</li>
+                            <li><strong>内分泌疾病：</strong>库欣综合征、肢端肥大症、甲亢</li>
+                            <li><strong>药物诱导：</strong>糖皮质激素、利尿剂、抗精神病药</li>
+                            <li><strong>感染：</strong>先天性风疹、巨细胞病毒感染</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="content-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-heartbeat"></i>
+                        临床表现
+                    </h3>
+                    <div class="section-content">
+                        <p>根据不同病因表现各异：</p>
+                        <ul>
+                            <li>MODY：常染色体显性遗传，发病年龄较早</li>
+                            <li>线粒体糖尿病：母系遗传，常伴有听力障碍</li>
+                            <li>继发性糖尿病：有原发病的临床表现</li>
+                            <li>药物诱导：血糖升高与用药相关</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="content-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-pills"></i>
+                        治疗方案
+                    </h3>
+                    <div class="section-content">
+                        <ul>
+                            <li><strong>病因治疗：</strong>治疗原发病，停用致病药物</li>
+                            <li><strong>个体化治疗：</strong>根据具体类型制定方案</li>
+                            <li><strong>胰岛素治疗：</strong>部分类型需要胰岛素</li>
+                            <li><strong>基因诊断：</strong>明确遗传类型指导治疗</li>
+                            <li><strong>定期监测：</strong>根据病情调整治疗方案</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 底部导航 -->
+    <nav class="tab-bar">
+        <div class="tab-item" onclick="window.location.href='index.html'">
+            <i class="fas fa-home"></i>
+            <span>首页</span>
+        </div>
+        <div class="tab-item">
+            <i class="fas fa-file-medical"></i>
+            <span>方案定制</span>
+        </div>
+        <div class="tab-item">
+            <i class="fas fa-heart"></i>
+            <span>生活习惯</span>
+        </div>
+        <div class="tab-item">
+            <i class="fas fa-robot"></i>
+            <span>A助手</span>
+        </div>
+        <div class="tab-item">
+            <i class="fas fa-user"></i>
+            <span>个人中心</span>
+        </div>
+    </nav>
+    
+    <script>
+        // 处理返回逻辑
+        function handleBack() {
+            // 如果历史记录只有当前页面，则跳转到首页
+            if (window.history.length <= 2) {
+                window.location.href = 'index.html';
+            } else {
+                window.history.back();
+            }
+        }
+
+        // 返回首页功能
+        document.querySelectorAll('.tab-item')[0].addEventListener('click', function() {
+            window.location.href = 'index.html';
+        });
+    </script>
+    <script src="js/cacheManager.js"></script>
+    <script src="js/navbarToggle.js"></script>
+</body>
+</html>

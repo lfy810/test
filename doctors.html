@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>专业医师团队 - 糖尿病预治智能助手</title>
+    <meta name="description" content="糖尿病预治智能助手的专业医师团队介绍，包括内分泌科主任医师、心血管内科主任医师和内分泌科副主任医师">
+    <meta name="keywords" content="专业医师团队,糖尿病专家,内分泌科医师,心血管内科医师">
+    <meta name="author" content="糖尿病预治智能助手">
+    <link rel="preconnect" href="https://static.mastergo.com">
+    <link rel="stylesheet" href="https://static.mastergo.com/static/ai/resource/html/googleapis/css2">
+    <link rel="stylesheet" href="css/all.min.css">
+    <style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,#f8fafc,#e2e8f0);min-height:100vh;color:#1e293b}
+.container{max-width:750px;margin:0 auto;background:#fff;min-height:100vh;position:relative}
+        
+/* 顶部导航栏 */
+.top-bar{height:80px;background:linear-gradient(135deg,#0369a1,#0ea5e9);display:flex;align-items:center;padding:0 24px;position:relative;box-shadow:0 4px 20px rgba(3,105,161,0.15)}
+.back-btn{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s ease}
+.back-btn:active{background:rgba(255,255,255,0.3);transform:translateX(-2px)}
+.back-btn i{color:#fff;font-size:20px}
+.page-title{flex:1;text-align:center;color:#fff;font-size:18px;font-weight:600;margin:0 16px}
+        
+/* 内容区域 */
+.content{padding:24px;padding-bottom:100px}
+.section-title{font-size:20px;font-weight:600;color:#0369a1;margin-bottom:24px;text-align:center}
+.doctor-list{display:flex;flex-direction:column;gap:20px}
+.doctor-card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.05);border:1px solid rgba(3,105,161,0.1);cursor:pointer;transition:all .3s ease}
+.doctor-card:hover,.doctor-card:active{transform:translateY(-4px);box-shadow:0 12px 32px rgba(3,105,161,0.15)}
+        
+.doctor-header{display:flex;align-items:center;gap:16px;margin-bottom:16px}
+.doctor-avatar{width:80px;height:80px;border-radius:50%;overflow:hidden;border:3px solid #0ea5e9;box-shadow:0 4px 12px rgba(14,165,233,0.3);transition:all .3s ease;animation:ripple 5s linear infinite}
+.doctor-card:hover .doctor-avatar{transform:scale(1.05);box-shadow:0 8px 24px rgba(14,165,233,0.4)}
+.doctor-avatar img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s ease}
+.doctor-info{flex:1}
+.doctor-name{font-size:18px;font-weight:600;color:#0369a1;margin-bottom:4px}
+.doctor-title{font-size:14px;color:#475569;margin-bottom:4px}
+.doctor-hospital{font-size:13px;color:#64748b}
+.doctor-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.doctor-tag{padding:6px 12px;background:linear-gradient(135deg,rgba(3,105,161,0.1),rgba(14,165,233,0.1));color:#0369a1;border-radius:16px;font-size:12px;font-weight:500;border:1px solid rgba(3,105,161,0.2)}
+        
+.doctor-desc{font-size:14px;line-height:1.6;color:#475569;margin-bottom:16px}
+.doctor-stats{display:flex;gap:20px;font-size:12px;color:#64748b}
+.stat-item{display:flex;align-items:center;gap:4px}
+.stat-item i{color:#0ea5e9}
+.view-btn{width:100%;padding:12px;background:linear-gradient(135deg,#0369a1,#0ea5e9);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;transition:all .3s ease}
+.view-btn:active{background:linear-gradient(135deg,#0284c7,#38bdf8);transform:translateY(-1px);box-shadow:0 4px 12px rgba(3,105,161,0.3)}
+        
+/* 底部导航 */
+.tab-bar{position:fixed;bottom:0;width:100%;max-width:750px;height:70px;background:linear-gradient(180deg,#fff,#f8fafc);border-top:1px solid rgba(3,105,161,0.1);display:flex;justify-content:space-around;align-items:center;z-index:100;box-shadow:0 -4px 20px rgba(0,0,0,0.05)}
+.tab-item{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;color:#64748b;padding:6px 8px;border-radius:8px;transition:all .3s ease;position:relative}
+.tab-item.active{background:linear-gradient(135deg,#0369a1,#0ea5e9);color:#fff;box-shadow:0 4px 16px rgba(3,105,161,0.3)}
+.tab-item i{font-size:22px;transition:transform .3s ease}
+.tab-item:active i{transform:translateY(-2px)}
+        
+/* 前后浮动动画 */
+@keyframes float {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.08);
+    }
+}
+
+/* 浅蓝到白色涟漪动画 - 匀速呼吸效果 */
+@keyframes ripple {
+    0% {
+        transform: scale(1);
+        box-shadow: 
+            0 0 15px rgba(14, 165, 233, 0.6),
+            0 0 30px rgba(14, 165, 233, 0.3),
+            0 0 45px rgba(14, 165, 233, 0.1);
+    }
+    25% {
+        transform: scale(1.05);
+        box-shadow: 
+            0 0 20px rgba(56, 189, 248, 0.7),
+            0 0 40px rgba(56, 189, 248, 0.4),
+            0 0 60px rgba(56, 189, 248, 0.2);
+    }
+    50% {
+        transform: scale(1.1);
+        box-shadow: 
+            0 0 25px rgba(255, 255, 255, 0.9),
+            0 0 50px rgba(255, 255, 255, 0.5),
+            0 0 75px rgba(255, 255, 255, 0.3);
+    }
+    75% {
+        transform: scale(1.05);
+        box-shadow: 
+            0 0 20px rgba(56, 189, 248, 0.7),
+            0 0 40px rgba(56, 189, 248, 0.4),
+            0 0 60px rgba(56, 189, 248, 0.2);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 
+            0 0 15px rgba(14, 165, 233, 0.6),
+            0 0 30px rgba(14, 165, 233, 0.3),
+            0 0 45px rgba(14, 165, 233, 0.1);
+    }
+}
+</style>
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部导航栏 -->
+        <header class="top-bar">
+            <div class="back-btn" onclick="handleBack()">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+            <div class="page-title">专业医师团队</div>
+            <div style="width: 40px;"></div>
+        </header>
+        
+        <!-- 内容区域 -->
+        <div class="content">
+            <h1 class="section-title">我们的专业医师团队</h1>
+            
+            <div class="doctor-list">
+                <!-- 张伟明医师 -->
+                <div class="doctor-card" onclick="window.location.href='doctor-zhang.html'">
+                    <div class="doctor-header">
+                        <div class="doctor-avatar">
+                            <img src="img/doc1.jpg" alt="张伟明">
+                        </div>
+                        <div class="doctor-info">
+                            <div class="doctor-name">张伟明</div>
+                            <div class="doctor-title">主任医师</div>
+                            <div class="doctor-hospital">北京协和医院 内分泌科</div>
+                        </div>
+                    </div>
+                    
+                    <div class="doctor-tags">
+                        <span class="doctor-tag">糖尿病专家</span>
+                        <span class="doctor-tag">内分泌疾病</span>
+                        <span class="doctor-tag">肥胖症</span>
+                    </div>
+                    
+                    <div class="doctor-desc">
+                        从事内分泌临床工作30余年，擅长糖尿病及其并发症的诊断与治疗，在糖尿病个体化治疗方案制定方面经验丰富。
+                    </div>
+                    
+                    <div class="doctor-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-user-md"></i>
+                            <span>接诊量：10,000+</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-star"></i>
+                            <span>满意度：98%</span>
+                        </div>
+                    </div>
+                    
+                    <button class="view-btn">查看详情</button>
+                </div>
+                
+                <!-- 李雅琴医师 -->
+                <div class="doctor-card" onclick="window.location.href='doctor-li.html'">
+                    <div class="doctor-header">
+                        <div class="doctor-avatar">
+                            <img src="img/doc2.png" alt="李雅琴">
+                        </div>
+                        <div class="doctor-info">
+                            <div class="doctor-name">李雅琴</div>
+                            <div class="doctor-title">副主任医师</div>
+                            <div class="doctor-hospital">北京协和医院 内分泌科</div>
+                        </div>
+                    </div>
+                    
+                    <div class="doctor-tags">
+                        <span class="doctor-tag">糖尿病教育</span>
+                        <span class="doctor-tag">妊娠糖尿病</span>
+                        <span class="doctor-tag">甲状腺疾病</span>
+                    </div>
+                    
+                    <div class="doctor-desc">
+                        专注于糖尿病教育和妊娠糖尿病管理，擅长为患者提供个性化的饮食和运动指导，帮助患者更好地控制血糖。
+                    </div>
+                    
+                    <div class="doctor-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-user-md"></i>
+                            <span>接诊量：8,500+</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-star"></i>
+                            <span>满意度：97%</span>
+                        </div>
+                    </div>
+                    
+                    <button class="view-btn">查看详情</button>
+                </div>
+                
+                <!-- 王建国医师 -->
+                <div class="doctor-card" onclick="window.location.href='doctor-wang.html'">
+                    <div class="doctor-header">
+                        <div class="doctor-avatar">
+                            <img src="img/doc3.png" alt="王建国">
+                        </div>
+                        <div class="doctor-info">
+                            <div class="doctor-name">王建国</div>
+                            <div class="doctor-title">主治医师</div>
+                            <div class="doctor-hospital">北京协和医院 内分泌科</div>
+                        </div>
+                    </div>
+                    
+                    <div class="doctor-tags">
+                        <span class="doctor-tag">血糖监测</span>
+                        <span class="doctor-tag">胰岛素治疗</span>
+                        <span class="doctor-tag">并发症管理</span>
+                    </div>
+                    
+                    <div class="doctor-desc">
+                        擅长血糖监测技术和胰岛素治疗方案调整，在糖尿病并发症的早期筛查和干预方面有丰富经验。
+                    </div>
+                    
+                    <div class="doctor-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-user-md"></i>
+                            <span>接诊量：6,200+</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-star"></i>
+                            <span>满意度：96%</span>
+                        </div>
+                    </div>
+                    
+                    <button class="view-btn">查看详情</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部导航 -->
+        <nav class="tab-bar">
+            <div class="tab-item active" onclick="window.location.href='index.html'">
+                <i class="fas fa-home"></i>
+                <span>首页</span>
+            </div>
+            <div class="tab-item">
+                <i class="fas fa-file-medical"></i>
+                <span>方案定制</span>
+            </div>
+            <div class="tab-item">
+                <i class="fas fa-heart"></i>
+                <span>生活习惯</span>
+            </div>
+            <div class="tab-item">
+                <i class="fas fa-robot"></i>
+                <span>A助手</span>
+            </div>
+            <div class="tab-item">
+                <i class="fas fa-user"></i>
+                <span>个人中心</span>
+            </div>
+        </nav>
+    </div>
+    
+    <script>
+        // 处理返回逻辑
+        function handleBack() {
+            // 如果历史记录只有当前页面，则跳转到首页
+            if (window.history.length <= 2) {
+                window.location.href = 'index.html';
+            } else {
+                window.history.back();
+            }
+        }
+    </script>
+    <script src="js/cacheManager.js"></script>
+    <script src="js/navbarToggle.js"></script>
+</body>
+</html>
