@@ -345,22 +345,34 @@ body{font-family:'PingFang SC','Helvetica Neue',Arial,sans-serif;background:line
         const scrollbarContainer = document.getElementById('scrollbarContainer');
         let startY, startScrollTop;
 
-        scrollbarThumb.addEventListener('mousedown', (e) => {
+        // 鼠标事件处理
+        scrollbarThumb.addEventListener('mousedown', handleDragStart);
+        document.addEventListener('mousemove', handleDragMove);
+        document.addEventListener('mouseup', handleDragEnd);
+
+        // 触摸事件处理
+        scrollbarThumb.addEventListener('touchstart', handleDragStart, { passive: false });
+        document.addEventListener('touchmove', handleDragMove, { passive: false });
+        document.addEventListener('touchend', handleDragEnd);
+
+        function handleDragStart(e) {
             isDragging = true;
-            startY = e.clientY;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            startY = clientY;
             startScrollTop = window.pageYOffset || document.documentElement.scrollTop;
             e.preventDefault();
-        });
+        }
 
-        document.addEventListener('mousemove', (e) => {
+        function handleDragMove(e) {
             if (!isDragging) return;
             
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
             const containerHeight = scrollbarContainer.offsetHeight;
             const thumbHeight = scrollbarThumb.offsetHeight;
             const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
             const maxThumbPosition = containerHeight - thumbHeight;
             
-            const deltaY = e.clientY - startY;
+            const deltaY = clientY - startY;
             const thumbPosition = (startScrollTop / scrollHeight) * maxThumbPosition + deltaY;
             
             // 限制滚动条范围
@@ -371,11 +383,13 @@ body{font-family:'PingFang SC','Helvetica Neue',Arial,sans-serif;background:line
                 top: targetScrollTop,
                 behavior: 'auto'
             });
-        });
+            
+            e.preventDefault();
+        }
 
-        document.addEventListener('mouseup', () => {
+        function handleDragEnd() {
             isDragging = false;
-        });
+        }
 
         // 滚动条点击事件
         scrollbarContainer.addEventListener('click', (e) => {
