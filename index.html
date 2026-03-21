@@ -798,10 +798,18 @@ document.addEventListener('click', event => {
     }
 });
 
-// 滚动页面时隐藏搜索建议并更新滚动条
+// 滚动页面时隐藏搜索建议、停止输入模式并更新滚动条
 window.addEventListener('scroll', () => {
     const suggestionsContainer = document.getElementById('searchSuggestions');
+    const searchInput = document.getElementById('searchInput');
+    
+    // 隐藏搜索建议
     suggestionsContainer.style.display = 'none';
+    
+    // 让搜索框失去焦点，停止输入模式
+    searchInput.blur();
+    
+    // 更新滚动条
     updateScrollbar();
 });
 
