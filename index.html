@@ -437,6 +437,39 @@
                 0 1px 4px rgba(14, 165, 233, 0.3);
         }
 
+        /* 回到顶部按钮 */
+        .back-to-top {
+            position: fixed;
+            top: 80px;
+            right: 25px;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(180deg, #0ea5e9, #0369a1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 9998;
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background: linear-gradient(180deg, #38bdf8, #0ea5e9);
+            box-shadow: 0 6px 16px rgba(14, 165, 233, 0.6);
+            transform: translateY(-2px);
+        }
+
         /* 延迟类 */
         .tide-delay-1 {
             animation-delay: 0.2s;
@@ -460,6 +493,11 @@
     </style>
 </head>
 <body>
+    <!-- 回到顶部按钮 -->
+    <div class="back-to-top" id="backToTop" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+    
     <!-- 滚动条 -->
     <div class="scrollbar-container" id="scrollbarContainer">
         <div class="scrollbar-thumb" id="scrollbarThumb"></div>
@@ -798,10 +836,11 @@ document.addEventListener('click', event => {
     }
 });
 
-// 滚动页面时隐藏搜索建议、停止输入模式并更新滚动条
+// 滚动页面时隐藏搜索建议、停止输入模式并更新滚动条和回到顶部按钮
 window.addEventListener('scroll', () => {
     const suggestionsContainer = document.getElementById('searchSuggestions');
     const searchInput = document.getElementById('searchInput');
+    const backToTop = document.getElementById('backToTop');
     
     // 隐藏搜索建议
     suggestionsContainer.style.display = 'none';
@@ -811,6 +850,13 @@ window.addEventListener('scroll', () => {
     
     // 更新滚动条
     updateScrollbar();
+    
+    // 显示/隐藏回到顶部按钮
+    if (window.pageYOffset > 300) {
+        backToTop.classList.add('show');
+    } else {
+        backToTop.classList.remove('show');
+    }
 });
 
 // 滚动条功能
@@ -929,6 +975,14 @@ scrollbarContainer.addEventListener('click', (e) => {
         behavior: 'smooth'
     });
 });
+
+// 回到顶部功能
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
 
 // 轮播图功能
 let currentSlide=0,totalSlides=3,slideInterval;
