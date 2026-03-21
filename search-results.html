@@ -154,7 +154,8 @@ body{font-family:'PingFang SC','Helvetica Neue',Arial,sans-serif;background:line
         .back-to-top {
             position: fixed;
             top: 80px;
-            right: 25px;
+            left: 50%;
+            transform: translateX(-50%);
             width: 40px;
             height: 40px;
             background: linear-gradient(180deg, #0ea5e9, #0369a1);
@@ -168,7 +169,7 @@ body{font-family:'PingFang SC','Helvetica Neue',Arial,sans-serif;background:line
             cursor: pointer;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s ease;
+            transition: all 0.5s ease;
             z-index: 9998;
         }
 
@@ -180,7 +181,7 @@ body{font-family:'PingFang SC','Helvetica Neue',Arial,sans-serif;background:line
         .back-to-top:hover {
             background: linear-gradient(180deg, #38bdf8, #0ea5e9);
             box-shadow: 0 6px 16px rgba(14, 165, 233, 0.6);
-            transform: translateY(-2px);
+            transform: translateX(-50%) translateY(-2px);
         }
 
         /* 底部导航 */
