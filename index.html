@@ -389,6 +389,54 @@
             animation: tide-left 0.8s ease-out forwards;
         }
 
+        /* 滚动条样式 */
+        .scrollbar-container {
+            position: fixed;
+            right: 10px;
+            top: 100px;
+            bottom: 80px;
+            width: 12px;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 6px;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            cursor: pointer;
+            box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .scrollbar-container.show {
+            opacity: 1;
+        }
+
+        .scrollbar-thumb {
+            width: 100%;
+            height: 60px;
+            background: linear-gradient(180deg, #0ea5e9, #0369a1);
+            border-radius: 6px;
+            position: absolute;
+            cursor: grab;
+            transition: all 0.2s ease;
+            box-shadow: 
+                0 2px 8px rgba(14, 165, 233, 0.4),
+                0 1px 3px rgba(14, 165, 233, 0.2);
+        }
+
+        .scrollbar-thumb:active {
+            cursor: grabbing;
+            transform: scale(1.05);
+            box-shadow: 
+                0 4px 12px rgba(14, 165, 233, 0.6),
+                0 2px 6px rgba(14, 165, 233, 0.3);
+        }
+
+        .scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #38bdf8, #0ea5e9);
+            box-shadow: 
+                0 3px 10px rgba(14, 165, 233, 0.5),
+                0 1px 4px rgba(14, 165, 233, 0.3);
+        }
+
         /* 延迟类 */
         .tide-delay-1 {
             animation-delay: 0.2s;
@@ -412,6 +460,11 @@
     </style>
 </head>
 <body>
+    <!-- 滚动条 -->
+    <div class="scrollbar-container" id="scrollbarContainer">
+        <div class="scrollbar-thumb" id="scrollbarThumb"></div>
+    </div>
+    
     <div class="container">
         <!-- 顶部导航栏 -->
         <header class="top-bar">
@@ -745,10 +798,114 @@ document.addEventListener('click', event => {
     }
 });
 
-// 滚动页面时隐藏搜索建议
+// 滚动页面时隐藏搜索建议并更新滚动条
 window.addEventListener('scroll', () => {
     const suggestionsContainer = document.getElementById('searchSuggestions');
     suggestionsContainer.style.display = 'none';
+    updateScrollbar();
+});
+
+// 滚动条功能
+let hideScrollbarTimeout;
+let isDragging = false;
+
+function updateScrollbar() {
+    const scrollbarContainer = document.getElementById('scrollbarContainer');
+    const scrollbarThumb = document.getElementById('scrollbarThumb');
+    
+    // 显示滚动条
+    scrollbarContainer.classList.add('show');
+    
+    // 计算滚动进度
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const containerHeight = scrollbarContainer.offsetHeight;
+    const thumbHeight = scrollbarThumb.offsetHeight;
+    
+    // 计算滚动条位置
+    const maxThumbPosition = containerHeight - thumbHeight;
+    const thumbPosition = (scrollTop / scrollHeight) * maxThumbPosition;
+    
+    // 更新滚动条位置
+    scrollbarThumb.style.transform = `translateY(${thumbPosition}px)`;
+    
+    // 清除之前的定时器
+    clearTimeout(hideScrollbarTimeout);
+    
+    // 设置延迟隐藏滚动条
+    hideScrollbarTimeout = setTimeout(() => {
+        if (!isDragging) {
+            scrollbarContainer.classList.remove('show');
+        }
+    }, 1500);
+}
+
+// 滚动条拖动功能
+const scrollbarThumb = document.getElementById('scrollbarThumb');
+const scrollbarContainer = document.getElementById('scrollbarContainer');
+let startY, startScrollTop;
+
+scrollbarThumb.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    startY = e.clientY;
+    startScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    e.preventDefault();
+});
+
+document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    
+    const containerHeight = scrollbarContainer.offsetHeight;
+    const thumbHeight = scrollbarThumb.offsetHeight;
+    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const maxThumbPosition = containerHeight - thumbHeight;
+    
+    const deltaY = e.clientY - startY;
+    const thumbPosition = (startScrollTop / scrollHeight) * maxThumbPosition + deltaY;
+    
+    // 限制滚动条范围
+    const clampedPosition = Math.max(0, Math.min(maxThumbPosition, thumbPosition));
+    const targetScrollTop = (clampedPosition / maxThumbPosition) * scrollHeight;
+    
+    window.scrollTo({
+        top: targetScrollTop,
+        behavior: 'auto'
+    });
+});
+
+document.addEventListener('mouseup', () => {
+    isDragging = false;
+});
+
+// 滚动条点击事件
+scrollbarContainer.addEventListener('click', (e) => {
+    if (e.target === scrollbarThumb) return;
+    
+    const containerRect = scrollbarContainer.getBoundingClientRect();
+    const thumbRect = scrollbarThumb.getBoundingClientRect();
+    const clickPosition = e.clientY - containerRect.top;
+    
+    const containerHeight = containerRect.height;
+    const thumbHeight = thumbRect.height;
+    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const maxThumbPosition = containerHeight - thumbHeight;
+    
+    // 计算目标位置
+    let targetThumbPosition;
+    if (clickPosition < thumbRect.top - containerRect.top) {
+        targetThumbPosition = clickPosition;
+    } else {
+        targetThumbPosition = clickPosition - thumbHeight;
+    }
+    
+    // 限制范围
+    targetThumbPosition = Math.max(0, Math.min(maxThumbPosition, targetThumbPosition));
+    const targetScrollTop = (targetThumbPosition / maxThumbPosition) * scrollHeight;
+    
+    window.scrollTo({
+        top: targetScrollTop,
+        behavior: 'smooth'
+    });
 });
 
 // 轮播图功能
