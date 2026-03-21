@@ -57,6 +57,23 @@ body{font-family:'PingFang SC','Helvetica Neue',Arial,sans-serif;background:#f8f
 .stat-item{text-align:center}
 .stat-number{font-size:24px;font-weight:700;margin-bottom:4px}
 .stat-label{font-size:14px;opacity:.9}
+
+        /* 潮水聚集动画 - 从右到左 */
+        @keyframes tide-left {
+            0% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* 潮水动画类 */
+        .tide-left {
+            animation: tide-left 0.8s ease-out forwards;
+        }
     </style>
 </head>
 <body>
@@ -77,7 +94,7 @@ body{font-family:'PingFang SC','Helvetica Neue',Arial,sans-serif;background:#f8f
             <h1 class="main-title">糖尿病类型详解</h1>
             
             <!-- 统计信息 -->
-            <div class="stats-section">
+            <div class="stats-section tide-left">
                 <h2 class="stats-title">全球糖尿病现状</h2>
                 <div class="stats-grid">
                     <div class="stat-item">
@@ -100,7 +117,7 @@ body{font-family:'PingFang SC','Helvetica Neue',Arial,sans-serif;background:#f8f
             </div>
             
             <!-- 1型糖尿病 -->
-            <div class="type-card">
+            <div class="type-card tide-left">
                 <div class="type-header">
                     <div class="type-image">
                         <img src="img/tnb1.png" alt="1型糖尿病">
@@ -168,7 +185,7 @@ body{font-family:'PingFang SC','Helvetica Neue',Arial,sans-serif;background:#f8f
             </div>
             
             <!-- 2型糖尿病 -->
-            <div class="type-card">
+            <div class="type-card tide-left">
                 <div class="type-header">
                     <div class="type-image">
                         <img src="img/tnb2.png" alt="2型糖尿病">
@@ -238,7 +255,7 @@ body{font-family:'PingFang SC','Helvetica Neue',Arial,sans-serif;background:#f8f
             </div>
             
             <!-- 妊娠糖尿病 -->
-            <div class="type-card">
+            <div class="type-card tide-left">
                 <div class="type-header">
                     <div class="type-image">
                         <img src="img/tnb3.png" alt="妊娠糖尿病">
@@ -309,7 +326,7 @@ body{font-family:'PingFang SC','Helvetica Neue',Arial,sans-serif;background:#f8f
             </div>
             
             <!-- 其他类型糖尿病 -->
-            <div class="type-card">
+            <div class="type-card tide-left">
                 <div class="type-header">
                     <div class="type-image">
                         <img src="img/tnb4.png" alt="其他类型">

@@ -63,6 +63,23 @@ body{font-family:'PingFang SC','Helvetica Neue',Arial,sans-serif;background:line
 .tab-item.active{background:linear-gradient(135deg,#0369a1,#0ea5e9);color:#fff;box-shadow:0 4px 16px rgba(3,105,161,0.3)}
 .tab-item i{font-size:22px;transition:transform .3s ease}
 .tab-item:active i{transform:translateY(-2px)}
+
+        /* 潮水聚集动画 - 从右到左 */
+        @keyframes tide-left {
+            0% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* 潮水动画类 */
+        .tide-left {
+            animation: tide-left 0.8s ease-out forwards;
+        }
     </style>
 </head>
 <body>
@@ -91,7 +108,7 @@ body{font-family:'PingFang SC','Helvetica Neue',Arial,sans-serif;background:line
             <h1 class="main-title">妊娠糖尿病</h1>
             
             <!-- 妊娠糖尿病 -->
-            <div class="type-card">
+            <div class="type-card tide-left">
                 <div class="type-header">
                     <div class="type-image">
                         <img src="img/tnb3.png" alt="妊娠糖尿病">

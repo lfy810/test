@@ -102,6 +102,23 @@ body{font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',Ro
             0 0 45px rgba(14, 165, 233, 0.1);
     }
 }
+
+        /* 潮水聚集动画 - 从右到左 */
+        @keyframes tide-left {
+            0% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* 潮水动画类 */
+        .tide-left {
+            animation: tide-left 0.8s ease-out forwards;
+        }
 </style>
 </head>
 <body>
@@ -121,7 +138,7 @@ body{font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',Ro
             
             <div class="doctor-list">
                 <!-- 张伟明医师 -->
-                <div class="doctor-card" onclick="window.location.href='doctor-zhang.html'">
+                <div class="doctor-card tide-left" onclick="window.location.href='doctor-zhang.html'">
                     <div class="doctor-header">
                         <div class="doctor-avatar">
                             <img src="img/doc1.jpg" alt="张伟明">
@@ -158,7 +175,7 @@ body{font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',Ro
                 </div>
                 
                 <!-- 李雅琴医师 -->
-                <div class="doctor-card" onclick="window.location.href='doctor-li.html'">
+                <div class="doctor-card tide-left" onclick="window.location.href='doctor-li.html'">
                     <div class="doctor-header">
                         <div class="doctor-avatar">
                             <img src="img/doc2.png" alt="李雅琴">
@@ -195,7 +212,7 @@ body{font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',Ro
                 </div>
                 
                 <!-- 王建国医师 -->
-                <div class="doctor-card" onclick="window.location.href='doctor-wang.html'">
+                <div class="doctor-card tide-left" onclick="window.location.href='doctor-wang.html'">
                     <div class="doctor-header">
                         <div class="doctor-avatar">
                             <img src="img/doc3.png" alt="王建国">

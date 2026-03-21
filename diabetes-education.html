@@ -169,6 +169,23 @@ body{font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',Ro
         .tab-item:hover i {
             transform: translateY(-2px);
         }
+
+        /* 潮水聚集动画 - 从右到左 */
+        @keyframes tide-left {
+            0% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* 潮水动画类 */
+        .tide-left {
+            animation: tide-left 0.8s ease-out forwards;
+        }
     </style>
 </head>
 <body>
@@ -185,7 +202,7 @@ body{font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',Ro
         <!-- 内容区域 -->
         <div class="content">
             <!-- 糖尿病介绍 -->
-            <section class="section">
+            <section class="section tide-left">
                 <h2 class="section-title">
                     <i class="fas fa-info-circle"></i>
                     什么是糖尿病
@@ -208,7 +225,7 @@ body{font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',Ro
             </section>
             
             <!-- 预防糖尿病 -->
-            <section class="section">
+            <section class="section tide-left">
                 <h2 class="section-title">
                     <i class="fas fa-shield-alt"></i>
                     如何预防糖尿病
@@ -251,7 +268,7 @@ body{font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',Ro
             </section>
             
             <!-- 糖尿病药物 -->
-            <section class="section">
+            <section class="section tide-left">
                 <h2 class="section-title">
                     <i class="fas fa-pills"></i>
                     糖尿病药物治疗
@@ -290,7 +307,7 @@ body{font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',Ro
             </section>
             
             <!-- 综合管理 -->
-            <section class="section">
+            <section class="section tide-left">
                 <h2 class="section-title">
                     <i class="fas fa-heartbeat"></i>
                     糖尿病综合管理

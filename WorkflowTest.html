@@ -7,10 +7,28 @@
     <title>Workflow 接口测试</title>
     <script src="js/sweetalert2.all.min.js"></script>
     <script src="js/tailwindcss.js"></script>
+    <style>
+        /* 潮水聚集动画 - 从右到左 */
+        @keyframes tide-left {
+            0% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* 潮水动画类 */
+        .tide-left {
+            animation: tide-left 0.8s ease-out forwards;
+        }
+    </style>
 </head>
 
 <body class="p-8 bg-gray-100">
-    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6">
+    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6 tide-left">
         <h1 class="text-2xl font-bold mb-6 text-gray-800">Workflow 接口测试</h1>
 
         <div class="space-y-4">

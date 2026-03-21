@@ -172,6 +172,23 @@ body{font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',Ro
         .tab-item:hover i {
             transform: translateY(-2px);
         }
+
+        /* 潮水聚集动画 - 从右到左 */
+        @keyframes tide-left {
+            0% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* 潮水动画类 */
+        .tide-left {
+            animation: tide-left 0.8s ease-out forwards;
+        }
     </style>
 </head>
 <body>
@@ -191,7 +208,7 @@ body{font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',Ro
             
             <div class="article-list">
                 <!-- 饮食管理文章 -->
-                <div class="article-card" onclick="window.location.href='article.html'">
+                <div class="article-card tide-left" onclick="window.location.href='article.html'">
                     <div class="article-image">
                         <img src="img/a1.jpg" alt="饮食管理">
                     </div>
@@ -236,7 +253,7 @@ body{font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',Ro
                 </div>
                 
                 <!-- 运动方式文章 -->
-                <div class="article-card" onclick="window.location.href='exercise.html'">
+                <div class="article-card tide-left" onclick="window.location.href='exercise.html'">
                     <div class="article-image">
                         <img src="img/a2.jpg" alt="运动方式">
                     </div>
@@ -281,7 +298,7 @@ body{font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',Ro
                 </div>
                 
                 <!-- 血糖监测文章 -->
-                <div class="article-card" onclick="window.location.href='glucose-monitoring.html'">
+                <div class="article-card tide-left" onclick="window.location.href='glucose-monitoring.html'">
                     <div class="article-image">
                         <img src="img/a3.jpg" alt="血糖监测">
                     </div>

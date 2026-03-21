@@ -371,6 +371,44 @@
                     0 0 45px rgba(14, 165, 233, 0.1);
             }
         }
+
+        /* 潮水聚集动画 - 从右到左 */
+        @keyframes tide-left {
+            0% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* 潮水动画类 */
+        .tide-left {
+            animation: tide-left 0.8s ease-out forwards;
+        }
+
+        /* 延迟类 */
+        .tide-delay-1 {
+            animation-delay: 0.2s;
+        }
+
+        .tide-delay-2 {
+            animation-delay: 0.4s;
+        }
+
+        .tide-delay-3 {
+            animation-delay: 0.6s;
+        }
+
+        .tide-delay-4 {
+            animation-delay: 0.8s;
+        }
+
+        .tide-delay-5 {
+            animation-delay: 1.0s;
+        }
     </style>
 </head>
 <body>
@@ -393,7 +431,7 @@
         
         <main>
             <!-- 轮播图 -->
-            <section class="carousel-container">
+            <section class="carousel-container tide-left">
                 <div class="carousel">
                     <div class="carousel-inner">
                         <div class="carousel-item active" onclick="window.location.href='diabetes-education.html'">
@@ -411,15 +449,15 @@
                     </div>
                     
                     <!-- 左右控制按钮 -->
-                    <button class="carousel-btn prev-btn" onclick="changeSlide(-1)">
+                    <button class="carousel-btn prev-btn tide-left" onclick="changeSlide(-1)">
                         <i class="fas fa-chevron-left"></i>
                     </button>
-                    <button class="carousel-btn next-btn" onclick="changeSlide(1)">
+                    <button class="carousel-btn next-btn tide-left" onclick="changeSlide(1)">
                         <i class="fas fa-chevron-right"></i>
                     </button>
                     
                     <!-- 指示器 -->
-                    <div class="carousel-indicators">
+                    <div class="carousel-indicators tide-left">
                         <span class="indicator active" onclick="goToSlide(0)"></span>
                         <span class="indicator" onclick="goToSlide(1)"></span>
                         <span class="indicator" onclick="goToSlide(2)"></span>
@@ -428,31 +466,31 @@
             </section>
         
         <!-- 专业医师团队 -->
-        <section>
+        <section class="tide-left">
             <div class="section-header">
-                <h2 class="section-title fade-in">专业医师团队</h2>
-                <button class="more-btn fade-in" onclick="window.location.href='doctors.html'">更多</button>
+                <h2 class="section-title">专业医师团队</h2>
+                <button class="more-btn" onclick="window.location.href='doctors.html'">更多</button>
             </div>
             <div class="doctor-list">
-                <div class="doctor-card fade-in fade-in-delay-1" onclick="window.location.href='doctor-zhang.html'">
+                <div class="doctor-card tide-left" onclick="window.location.href='doctor-zhang.html'">
                     <div class="doctor-avatar">
-                        <img src="img/doc1.jpg" alt="张伟明" class="w-full h-full object-cover rounded-full" loading="lazy">
+                        <img src="img/doc1.jpg" alt="张伟明" loading="lazy">
                     </div>
                     <div class="doctor-name">张伟明</div>
                     <div class="doctor-dept">内分泌科<br>主任医师</div>
                     <button class="consult-btn">立即咨询</button>
                 </div>
-                <div class="doctor-card fade-in fade-in-delay-2" onclick="window.location.href='doctor-li.html'">
+                <div class="doctor-card tide-left" onclick="window.location.href='doctor-li.html'">
                     <div class="doctor-avatar">
-                        <img src="img/doc2.png" alt="李雅琴" class="w-full h-full object-cover rounded-full" loading="lazy">
+                        <img src="img/doc2.png" alt="李雅琴" loading="lazy">
                     </div>
                     <div class="doctor-name">李雅琴</div>
                     <div class="doctor-dept">内分泌科<br>副主任医师</div>
                     <button class="consult-btn">立即咨询</button>
                 </div>
-                <div class="doctor-card fade-in fade-in-delay-3" onclick="window.location.href='doctor-wang.html'">
+                <div class="doctor-card tide-left" onclick="window.location.href='doctor-wang.html'">
                     <div class="doctor-avatar">
-                        <img src="img/doc3.png" alt="王建国" class="w-full h-full object-cover rounded-full" loading="lazy">
+                        <img src="img/doc3.png" alt="王建国" loading="lazy">
                     </div>
                     <div class="doctor-name">王建国</div>
                     <div class="doctor-dept">内分泌科<br>主治医师</div>
@@ -462,15 +500,15 @@
         </section>
         
         <!-- 健康科普栏 -->
-        <section>
+        <section class="tide-left">
             <div class="section-header">
-                <h2 class="section-title fade-in">健康科普</h2>
-                <button class="more-btn fade-in" onclick="window.location.href='articles.html'">更多</button>
+                <h2 class="section-title">健康科普</h2>
+                <button class="more-btn" onclick="window.location.href='articles.html'">更多</button>
             </div>
             <div class="article-list">
-                <div class="article-card fade-in fade-in-delay-1" onclick="window.location.href='article.html'">
+                <div class="article-card tide-left" onclick="window.location.href='article.html'">
                     <div class="article-image">
-                        <img src="img/a1.jpg" alt="饮食管理" class="w-full h-full object-cover rounded-lg" loading="lazy">
+                        <img src="img/a1.jpg" alt="饮食管理" loading="lazy">
                     </div>
                     <div class="article-content">
                         <div class="article-title">糖尿病患者的饮食管理指南</div>
@@ -481,9 +519,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="article-card fade-in fade-in-delay-2" onclick="window.location.href='exercise.html'">
+                <div class="article-card tide-left" onclick="window.location.href='exercise.html'">
                     <div class="article-image">
-                        <img src="img/a2.jpg" alt="运动方式" class="w-full h-full object-cover rounded-lg" loading="lazy">
+                        <img src="img/a2.jpg" alt="运动方式" loading="lazy">
                     </div>
                     <div class="article-content">
                         <div class="article-title">适合糖尿病患者的运动方式</div>
@@ -494,9 +532,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="article-card fade-in fade-in-delay-3" onclick="window.location.href='glucose-monitoring.html'">
+                <div class="article-card tide-left" onclick="window.location.href='glucose-monitoring.html'">
                     <div class="article-image">
-                        <img src="img/a3.jpg" alt="血糖监测" class="w-full h-full object-cover rounded-lg" loading="lazy">
+                        <img src="img/a3.jpg" alt="血糖监测" loading="lazy">
                     </div>
                     <div class="article-content">
                         <div class="article-title">血糖监测的正确方法</div>
@@ -511,37 +549,37 @@
         </section>
         
         <!-- 糖尿病类型栏 -->
-        <section>
+        <section class="tide-left">
             <div class="section-header">
-                <h2 class="section-title fade-in">了解糖尿病</h2>
-                <button class="more-btn fade-in" onclick="window.location.href='type1.html'">查看全部</button>
+                <h2 class="section-title">了解糖尿病</h2>
+                <button class="more-btn" onclick="window.location.href='type1.html'">查看全部</button>
             </div>
             <div class="diabetes-types">
                 <div class="type-grid">
-                    <div class="type-card fade-in fade-in-delay-1" onclick="window.location.href='type1.html'">
+                    <div class="type-card tide-left" onclick="window.location.href='type1.html'">
                         <div class="type-image">
-                            <img src="img/tnb1.png" alt="1型糖尿病" class="w-full h-full object-cover rounded-full" loading="lazy">
+                            <img src="img/tnb1.png" alt="1型糖尿病" loading="lazy">
                         </div>
                         <div class="type-name">1型糖尿病</div>
                         <div class="type-desc">胰岛素依赖型糖尿病</div>
                     </div>
-                    <div class="type-card fade-in fade-in-delay-2" onclick="window.location.href='type2.html'">
+                    <div class="type-card tide-left" onclick="window.location.href='type2.html'">
                         <div class="type-image">
-                            <img src="img/tnb2.png" alt="2型糖尿病" class="w-full h-full object-cover rounded-full" loading="lazy">
+                            <img src="img/tnb2.png" alt="2型糖尿病" loading="lazy">
                         </div>
                         <div class="type-name">2型糖尿病</div>
                         <div class="type-desc">最常见的糖尿病类型</div>
                     </div>
-                    <div class="type-card fade-in fade-in-delay-3" onclick="window.location.href='type-pregnancy.html'">
+                    <div class="type-card tide-left" onclick="window.location.href='type-pregnancy.html'">
                         <div class="type-image">
-                            <img src="img/tnb3.png" alt="妊娠糖尿病" class="w-full h-full object-cover rounded-full" loading="lazy">
+                            <img src="img/tnb3.png" alt="妊娠糖尿病" loading="lazy">
                         </div>
                         <div class="type-name">妊娠糖尿病</div>
                         <div class="type-desc">孕期发生的血糖异常</div>
                     </div>
-                    <div class="type-card fade-in fade-in-delay-4" onclick="window.location.href='type-other.html'">
+                    <div class="type-card tide-left" onclick="window.location.href='type-other.html'">
                         <div class="type-image">
-                            <img src="img/tnb4.png" alt="其他类型" class="w-full h-full object-cover rounded-full" loading="lazy">
+                            <img src="img/tnb4.png" alt="其他类型" loading="lazy">
                         </div>
                         <div class="type-name">其他类型</div>
                         <div class="type-desc">特殊类型的糖尿病</div>
