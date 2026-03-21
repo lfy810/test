@@ -713,7 +713,7 @@ async function handleRealTimeSearch(event){
     const keyword=event.target.value.trim();
     const suggestionsContainer=document.getElementById('searchSuggestions');
     if(keyword.length===0){
-        suggestionsContainer.style.display='none';
+        showHotKeywords(suggestionsContainer);
         return;
     }
     try{
