@@ -458,6 +458,8 @@
     </div>
 
     <script>
+        // 用户信息存储改为sessionStorage，浏览器关闭时自动清除
+        
         // 用户信息数据
         let userInfo = {
             age: "",
@@ -592,7 +594,7 @@
             }
             
             // 获取用户ID
-            const savedUserInfo = localStorage.getItem('userInfo');
+            const savedUserInfo = sessionStorage.getItem('userInfo');
             if (!savedUserInfo) {
                 Swal.fire({
                     title: '错误',
@@ -602,9 +604,9 @@
                 return;
             }
             const userData = JSON.parse(savedUserInfo);
-            const userId = userData.username;
+            const userId = userData.userId;
             
-            // 准备工作流输入数据
+            // 准备工作流输入数据（保持中文值）
             const workflowInputs = {
                 userId: userId,
                 age: userInfo.age,
@@ -631,7 +633,7 @@
                 body: JSON.stringify({
                     inputs: workflowInputs,
                     response_mode: "blocking",
-                    user: userId
+                    user: "diabetes-assistant-user"
                 })
             })
             .then(response => {
@@ -639,14 +641,30 @@
                 if (!response.ok) {
                     throw new Error('HTTP错误！状态码: ' + response.status + ', 状态文本: ' + response.statusText);
                 }
-                return response.json();
+                return response.text();
             })
-            .then(responseData => {
-                console.log('API原始响应:', responseData);
+            .then(result => {
+                console.log('API原始响应:', result);
+                const responseData = JSON.parse(result);
+                console.log('解析后的响应:', responseData);
                 
-                // 解析响应数据
-                let parsedData;
+                // 检查工作流是否执行成功
+                if (responseData.status === 'failed') {
+                    const errorMsg = responseData.error || '工作流执行失败';
+                    console.error('工作流执行失败:', errorMsg);
+                    Swal.fire({
+                        title: '错误',
+                        text: '风险评估失败：' + errorMsg,
+                        icon: 'error'
+                    });
+                    document.getElementById('loadingIndicator').style.display = 'none';
+                    return;
+                }
+                
+                let parsedData = null;
+                // 检查outputs是否存在
                 if (responseData.data && responseData.data.outputs && responseData.data.outputs.body) {
+                    // 添加是否是string的判断
                     if (typeof responseData.data.outputs.body === 'string') {
                         parsedData = JSON.parse(responseData.data.outputs.body);
                     } else {

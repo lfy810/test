@@ -477,12 +477,17 @@
                     
                     // 检查是否返回了用户数据
                     if (parsedData && parsedData.result && parsedData.result.length > 0) {
+                        // 从工作流返回数据中提取用户ID
+                        const userData = parsedData.result[0];
+                        const userId = userData.id || userData.user_id || userData.userId || username;
+                        
                         // 登录成功，保存用户信息
                         const userInfo = {
+                            userId: userId,
                             username: username,
                             role: username === 'admin' ? '管理员' : '普通用户'
                         };
-                        localStorage.setItem('userInfo', JSON.stringify(userInfo));
+                        sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
                         
                         showMessage('登录成功！正在跳转到首页...', 'success');
                         
@@ -607,12 +612,17 @@
                         // 获取注册时输入的用户名
                         const registerUsername = document.getElementById('registerUsername').value.trim();
                         
-                        // 注册成功，直接保存用户信息
+                        // 从工作流返回数据中提取用户ID
+                        const userData = parsedData.result[0];
+                        const userId = userData.id || userData.user_id || userData.userId || registerUsername;
+                        
+                        // 注册成功，保存用户信息
                         const userInfo = {
+                            userId: userId,
                             username: registerUsername,
                             role: registerUsername === 'admin' ? '管理员' : '普通用户'
                         };
-                        localStorage.setItem('userInfo', JSON.stringify(userInfo));
+                        sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
                         
                         showMessage('注册成功！正在跳转到首页...', 'success');
                         

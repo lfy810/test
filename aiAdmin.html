@@ -515,9 +515,11 @@
     </div>
     
     <script>
+        // 用户信息存储改为sessionStorage，浏览器关闭时自动清除
+        
         // 检查用户权限
         function checkPermission() {
-            const savedUserInfo = localStorage.getItem('userInfo');
+            const savedUserInfo = sessionStorage.getItem('userInfo');
             if (!savedUserInfo) {
                 showPermissionError();
                 return false;
