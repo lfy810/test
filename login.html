@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录注册 - 糖尿病管理助手</title>
+    <link rel="stylesheet" href="css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            color: #1e293b;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(3, 105, 161, 0.15);
+            overflow: hidden;
+            animation: tide-left 0.8s ease-out;
+        }
+        
+        /* 从右向左聚拢动画 */
+        @keyframes tide-left {
+            0% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        /* 标题区域 */
+        .header {
+            background: linear-gradient(135deg, #0369a1, #0ea5e9);
+            padding: 30px 20px;
+            text-align: center;
+            color: #fff;
+        }
+        
+        .logo {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+        
+        .title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        /* 表单切换 */
+        .form-tabs {
+            display: flex;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 500;
+            color: #64748b;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .tab.active {
+            color: #0ea5e9;
+        }
+        
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #0ea5e9;
+        }
+        
+        /* 表单区域 */
+        .form-container {
+            padding: 30px 20px;
+        }
+        
+        .form {
+            display: none;
+        }
+        
+        .form.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        .input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        
+        .input:focus {
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        }
+        
+        .input.error {
+            border-color: #ef4444;
+        }
+        
+        .error-message {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        /* 按钮 */
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #0369a1, #0ea5e9);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(3, 105, 161, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        /* 其他链接 */
+        .other-links {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        
+        .link {
+            color: #0ea5e9;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .link:hover {
+            text-decoration: underline;
+        }
+        
+        /* 提示信息 */
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .message.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+        
+        .message.error {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #ef4444;
+        }
+        
+        /* 等待提示样式 */
+        .loading-indicator {
+            text-align: center;
+            margin: 15px 0;
+            padding: 10px;
+            display: none;
+            color: #0ea5e9;
+            font-size: 14px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        .loading-indicator.show {
+            display: block;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 480px) {
+            .container {
+                margin: 10px;
+            }
+            
+            .header {
+                padding: 24px 16px;
+            }
+            
+            .title {
+                font-size: 20px;
+            }
+            
+            .form-container {
+                padding: 24px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 标题区域 -->
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i>
+            </div>
+            <div class="title">糖尿病管理助手</div>
+            <div class="subtitle">专业的糖尿病健康管理平台</div>
+        </div>
+        
+        <!-- 表单切换 -->
+        <div class="form-tabs">
+            <div class="tab active" onclick="switchTab('login')">登录</div>
+            <div class="tab" onclick="switchTab('register')">注册</div>
+        </div>
+        
+        <!-- 登录表单 -->
+        <div class="form-container">
+            <div id="message" class="message"></div>
+            
+            <form class="form active" id="loginForm">
+                <div class="form-group">
+                    <label class="label" for="loginUsername">用户名</label>
+                    <input type="text" class="input" id="loginUsername" placeholder="请输入用户名" required>
+                    <div class="error-message" id="loginUsernameError">请输入用户名</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="label" for="loginPassword">密码</label>
+                    <input type="password" class="input" id="loginPassword" placeholder="请输入密码" required>
+                    <div class="error-message" id="loginPasswordError">请输入密码</div>
+                </div>
+                
+                <button type="submit" class="btn">登录</button>
+                
+                <!-- 等待提示 -->
+                <div class="loading-indicator" id="loginLoading">正在登录，请稍候...</div>
+                
+                <div class="other-links">
+                    <a href="#" class="link">忘记密码？</a>
+                </div>
+            </form>
+            
+            <!-- 注册表单 -->
+            <form class="form" id="registerForm">
+                <div class="form-group">
+                    <label class="label" for="registerUsername">用户名</label>
+                    <input type="text" class="input" id="registerUsername" placeholder="请输入用户名" required>
+                    <div class="error-message" id="registerUsernameError">请输入用户名</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="label" for="registerPassword">密码</label>
+                    <input type="password" class="input" id="registerPassword" placeholder="请输入密码" required>
+                    <div class="error-message" id="registerPasswordError">密码长度至少6位</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="label" for="registerConfirmPassword">确认密码</label>
+                    <input type="password" class="input" id="registerConfirmPassword" placeholder="请再次输入密码" required>
+                    <div class="error-message" id="registerConfirmPasswordError">两次输入的密码不一致</div>
+                </div>
+                
+                <button type="submit" class="btn">注册</button>
+                
+                <!-- 等待提示 -->
+                <div class="loading-indicator" id="registerLoading">正在注册，请稍候...</div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // 表单切换
+        function switchTab(tabName) {
+            // 更新标签状态
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            // 根据tabName找到对应的标签元素
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                if (tab.textContent.trim() === (tabName === 'login' ? '登录' : '注册')) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            // 更新表单显示
+            document.querySelectorAll('.form').forEach(form => form.classList.remove('active'));
+            document.getElementById(tabName + 'Form').classList.add('active');
+            
+            // 隐藏消息
+            hideMessage();
+        }
+        
+        // 显示消息
+        function showMessage(text, type) {
+            const message = document.getElementById('message');
+            message.textContent = text;
+            message.className = `message ${type}`;
+            message.style.display = 'block';
+        }
+        
+        // 隐藏消息
+        function hideMessage() {
+            const message = document.getElementById('message');
+            message.style.display = 'none';
+        }
+        
+        // 验证输入
+        function validateInput(input, errorElementId, validationFn) {
+            const errorElement = document.getElementById(errorElementId);
+            if (!validationFn()) {
+                input.classList.add('error');
+                errorElement.classList.add('show');
+                return false;
+            } else {
+                input.classList.remove('error');
+                errorElement.classList.remove('show');
+                return true;
+            }
+        }
+        
+        // 登录表单验证
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            
+            // 验证输入
+            const isValidUsername = validateInput(
+                document.getElementById('loginUsername'),
+                'loginUsernameError',
+                () => username.length >= 3
+            );
+            
+            const isValidPassword = validateInput(
+                document.getElementById('loginPassword'),
+                'loginPasswordError',
+                () => password.length >= 6
+            );
+            
+            if (!isValidUsername || !isValidPassword) {
+                return;
+            }
+            
+            // 显示等待提示
+            document.getElementById('loginLoading').classList.add('show');
+            
+            // 调用Dify数据管理工作流API进行登录验证
+            console.log('开始调用登录API...');
+            console.log('API地址:', 'http://192.168.43.183/v1/workflows/run');
+            const loginIntention = `查询用户名为"${username}"且密码为"${password}"的用户信息`;
+            console.log('请求数据:', {
+                inputs: {
+                    intention: loginIntention
+                },
+                response_mode: "blocking",
+                user: "diabetes-assistant-user"
+            });
+            
+            fetch('http://192.168.43.183/v1/workflows/run', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer app-85ZNXm7b7LkGfhPdBK4mJl3E'
+                },
+                body: JSON.stringify({
+                    inputs: {
+                        intention: loginIntention
+                    },
+                    response_mode: "blocking",
+                    user: "diabetes-assistant-user"
+                })
+            })
+            .then(response => {
+                console.log('API响应状态:', response.status, response.statusText);
+                if (!response.ok) {
+                    throw new Error(`HTTP错误！状态码: ${response.status}, 状态文本: ${response.statusText}`);
+                }
+                return response.text();
+            })
+            .then(result => {
+                console.log('API原始响应:', result);
+                const responseData = JSON.parse(result);
+                console.log('解析后的响应:', responseData);
+                
+                // 检查工作流是否执行成功
+                if (responseData.status === 'failed') {
+                    const errorMsg = responseData.error || '工作流执行失败';
+                    console.error('工作流执行失败:', errorMsg);
+                    showMessage('登录失败：' + errorMsg, 'error');
+                    return;
+                }
+                
+                let parsedData = null;
+                // 检查outputs是否存在
+                if (responseData.data && responseData.data.outputs && responseData.data.outputs.body) {
+                    // 添加是否是string的判断
+                    if (typeof responseData.data.outputs.body === 'string') {
+                        parsedData = JSON.parse(responseData.data.outputs.body);
+                    } else {
+                        parsedData = responseData.data.outputs.body;
+                    }
+                    
+                    console.log('响应数据:', parsedData);
+                    
+                    // 检查是否返回了用户数据
+                    if (parsedData && parsedData.result && parsedData.result.length > 0) {
+                        // 登录成功，保存用户信息
+                        const userInfo = {
+                            username: username,
+                            role: username === 'admin' ? '管理员' : '普通用户'
+                        };
+                        localStorage.setItem('userInfo', JSON.stringify(userInfo));
+                        
+                        showMessage('登录成功！正在跳转到首页...', 'success');
+                        
+                        // 跳转到首页
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 1500);
+                    } else {
+                        showMessage('用户名或密码错误', 'error');
+                    }
+                } else {
+                    console.error('响应数据不完整:', responseData);
+                    showMessage('登录失败：服务器返回数据不完整', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('登录失败详细信息:', error);
+                console.error('错误类型:', error.name);
+                console.error('错误堆栈:', error.stack);
+                showMessage('登录失败: ' + error.message, 'error');
+            })
+            .finally(() => {
+                // 隐藏等待提示
+                document.getElementById('loginLoading').classList.remove('show');
+            });
+        });
+        
+        // 注册表单验证
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('registerUsername').value.trim();
+            const password = document.getElementById('registerPassword').value.trim();
+            const confirmPassword = document.getElementById('registerConfirmPassword').value.trim();
+            
+            // 验证输入
+            const isValidUsername = validateInput(
+                document.getElementById('registerUsername'),
+                'registerUsernameError',
+                () => username.length >= 3
+            );
+            
+            const isValidPassword = validateInput(
+                document.getElementById('registerPassword'),
+                'registerPasswordError',
+                () => password.length >= 6
+            );
+            
+            const isPasswordMatch = validateInput(
+                document.getElementById('registerConfirmPassword'),
+                'registerConfirmPasswordError',
+                () => password === confirmPassword
+            );
+            
+            if (!isValidUsername || !isValidPassword || !isPasswordMatch) {
+                return;
+            }
+            
+            // 显示等待提示
+            document.getElementById('registerLoading').classList.add('show');
+            
+            // 调用Dify数据管理工作流API创建新用户
+            console.log('开始调用注册API...');
+            console.log('API地址:', 'http://192.168.43.183/v1/workflows/run');
+            const registerIntention = `创建用户名为"${username}"密码为"${password}"的用户`;
+            console.log('请求数据:', {
+                inputs: {
+                    intention: registerIntention
+                },
+                response_mode: "blocking",
+                user: "diabetes-assistant-user"
+            });
+            
+            fetch('http://192.168.43.183/v1/workflows/run', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer app-85ZNXm7b7LkGfhPdBK4mJl3E'
+                },
+                body: JSON.stringify({
+                    inputs: {
+                        intention: registerIntention
+                    },
+                    response_mode: "blocking",
+                    user: "diabetes-assistant-user"
+                })
+            })
+            .then(response => {
+                console.log('API响应状态:', response.status, response.statusText);
+                if (!response.ok) {
+                    throw new Error(`HTTP错误！状态码: ${response.status}, 状态文本: ${response.statusText}`);
+                }
+                return response.text();
+            })
+            .then(result => {
+                console.log('API原始响应:', result);
+                const responseData = JSON.parse(result);
+                console.log('解析后的响应:', responseData);
+                
+                // 检查工作流是否执行成功
+                if (responseData.status === 'failed') {
+                    const errorMsg = responseData.error || '工作流执行失败';
+                    console.error('工作流执行失败:', errorMsg);
+                    showMessage('注册失败：' + errorMsg, 'error');
+                    return;
+                }
+                
+                let parsedData = null;
+                // 检查outputs是否存在
+                if (responseData.data && responseData.data.outputs && responseData.data.outputs.body) {
+                    // 添加是否是string的判断
+                    if (typeof responseData.data.outputs.body === 'string') {
+                        parsedData = JSON.parse(responseData.data.outputs.body);
+                    } else {
+                        parsedData = responseData.data.outputs.body;
+                    }
+                    
+                    console.log('响应数据:', parsedData);
+                    
+                    // 检查是否返回了用户数据
+                    if (parsedData && parsedData.result && parsedData.result.length > 0) {
+                        // 获取注册时输入的用户名
+                        const registerUsername = document.getElementById('registerUsername').value.trim();
+                        
+                        // 注册成功，直接保存用户信息
+                        const userInfo = {
+                            username: registerUsername,
+                            role: registerUsername === 'admin' ? '管理员' : '普通用户'
+                        };
+                        localStorage.setItem('userInfo', JSON.stringify(userInfo));
+                        
+                        showMessage('注册成功！正在跳转到首页...', 'success');
+                        
+                        // 跳转到首页
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 1500);
+                    } else {
+                        showMessage('注册失败，请稍后重试', 'error');
+                    }
+                } else {
+                    console.error('响应数据不完整:', responseData);
+                    showMessage('注册失败：服务器返回数据不完整', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('注册失败详细信息:', error);
+                console.error('错误类型:', error.name);
+                console.error('错误堆栈:', error.stack);
+                showMessage('注册失败: ' + error.message, 'error');
+            })
+            .finally(() => {
+                // 隐藏等待提示
+                document.getElementById('registerLoading').classList.remove('show');
+            });
+        });
+        
+        // 输入验证事件
+        document.getElementById('loginUsername').addEventListener('blur', function() {
+            validateInput(this, 'loginUsernameError', () => this.value.trim().length > 0);
+        });
+        
+        document.getElementById('loginPassword').addEventListener('blur', function() {
+            validateInput(this, 'loginPasswordError', () => this.value.length > 0);
+        });
+        
+        document.getElementById('registerUsername').addEventListener('blur', function() {
+            validateInput(this, 'registerUsernameError', () => this.value.trim().length >= 3);
+        });
+        
+        document.getElementById('registerPassword').addEventListener('blur', function() {
+            validateInput(this, 'registerPasswordError', () => this.value.length >= 6);
+        });
+        
+        document.getElementById('registerConfirmPassword').addEventListener('blur', function() {
+            const password = document.getElementById('registerPassword').value;
+            validateInput(this, 'registerConfirmPasswordError', () => this.value === password);
+        });
+    </script>
+</body>
+</html>

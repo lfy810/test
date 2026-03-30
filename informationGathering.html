@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人信息 - 糖尿病管理助手</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 全局样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* 潮水聚集动画 - 从右到左 */
+        @keyframes tide-left {
+            0% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* 呼吸霓虹光圈效果 */
+        @keyframes ripple {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 0 10px rgba(14, 165, 233, 0);
+            }
+        }
+
+        /* 滚动条样式 */
+        .scrollbar-container {
+            position: fixed;
+            right: 10px;
+            top: 100px;
+            bottom: 80px;
+            width: 12px;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 6px;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            cursor: pointer;
+            box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .scrollbar-container.show {
+            opacity: 1;
+        }
+
+        .scrollbar-thumb {
+            width: 100%;
+            height: 60px;
+            background: linear-gradient(180deg, #0ea5e9, #0369a1);
+            border-radius: 6px;
+            position: absolute;
+            cursor: grab;
+            transition: all 0.2s ease;
+            box-shadow: 
+                0 2px 8px rgba(14, 165, 233, 0.4),
+                0 1px 3px rgba(14, 165, 233, 0.2);
+        }
+
+        .scrollbar-thumb:active {
+            cursor: grabbing;
+            transform: scale(1.05);
+            box-shadow: 
+                0 4px 12px rgba(14, 165, 233, 0.6),
+                0 2px 6px rgba(14, 165, 233, 0.3);
+        }
+
+        .scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #38bdf8, #0ea5e9);
+            box-shadow: 
+                0 3px 10px rgba(14, 165, 233, 0.5),
+                0 1px 4px rgba(14, 165, 233, 0.3);
+        }
+
+        /* 回到顶部按钮 */
+        .back-to-top {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(180deg, #0ea5e9, #0369a1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s 0.5s;
+            z-index: 9998;
+            animation: ripple 2s infinite;
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s;
+        }
+
+        .back-to-top:hover {
+            background: linear-gradient(180deg, #38bdf8, #0ea5e9);
+            box-shadow: 0 6px 16px rgba(14, 165, 233, 0.6);
+            transform: translateX(-50%) translateY(-2px);
+        }
+
+        /* 容器样式 */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            animation: tide-left 0.8s ease-out forwards;
+        }
+
+        /* 页面头部 */
+        .page-header {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(14, 165, 233, 0.1);
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #0ea5e9, #0369a1, #0ea5e9);
+            border-radius: 17px;
+            z-index: -1;
+            animation: ripple 3s infinite;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #0ea5e9;
+            margin: 0;
+            flex: 1;
+            text-align: center;
+        }
+
+        .modify-btn {
+            background: none;
+            border: none;
+            color: #0ea5e9;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .modify-btn:hover {
+            background: rgba(14, 165, 233, 0.1);
+        }
+        
+        /* 返回按钮样式 */
+        .back-btn {
+            background: none;
+            border: none;
+            color: #0ea5e9;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            margin-right: 16px;
+        }
+        
+        .back-btn:hover {
+            background: rgba(14, 165, 233, 0.1);
+            transform: scale(1.1);
+        }
+        
+        /* 加载指示器样式 */
+        .loading-indicator {
+            text-align: center;
+            margin: 30px 0;
+            padding: 30px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(14, 165, 233, 0.1);
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(14, 165, 233, 0.3);
+            border-top: 4px solid #0ea5e9;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 信息卡片 */
+        .info-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(14, 165, 233, 0.1);
+            position: relative;
+        }
+
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #0ea5e9, #0369a1, #0ea5e9);
+            border-radius: 17px;
+            z-index: -1;
+            animation: ripple 4s infinite;
+            animation-delay: 0.5s;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        /* 信息项 */
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .info-value {
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* 修改模式样式 */
+        .info-item.edit-mode {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .edit-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .edit-input:focus {
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        }
+
+        /* 操作按钮 */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0ea5e9, #0369a1);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(14, 165, 233, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #666;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+
+            .page-header {
+                padding: 20px;
+            }
+
+            .page-title {
+                font-size: 20px;
+            }
+
+            .info-card {
+                padding: 20px;
+            }
+
+            .card-title {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 回到顶部按钮 -->
+    <div class="back-to-top" id="backToTop" onclick="scrollToTop()">
+        ↑
+    </div>
+    
+    <!-- 滚动条 -->
+    <div class="scrollbar-container" id="scrollbarContainer">
+        <div class="scrollbar-thumb" id="scrollbarThumb"></div>
+    </div>
+    
+    <div class="container">
+        <!-- 页面头部 -->
+        <div class="page-header">
+            <button class="back-btn" onclick="handleBack()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1 class="page-title">个人信息</h1>
+            <button class="modify-btn" id="modifyBtn">修改信息</button>
+        </div>
+
+        <!-- 基本信息 -->
+        <div class="info-card">
+            <h2 class="card-title">基本信息</h2>
+            <div class="info-item">
+                <span class="info-label">年龄</span>
+                <span class="info-value" id="ageValue">未填写</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">性别</span>
+                <span class="info-value" id="genderValue">未填写</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">家族病史</span>
+                <span class="info-value" id="familyHistoryValue">未填写</span>
+            </div>
+        </div>
+
+        <!-- 身体数据 -->
+        <div class="info-card">
+            <h2 class="card-title">身体数据</h2>
+            <div class="info-item">
+                <span class="info-label">身高</span>
+                <span class="info-value" id="heightValue">未填写</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">体重</span>
+                <span class="info-value" id="weightValue">未填写</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">腰围</span>
+                <span class="info-value" id="waistValue">未填写</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">收缩压</span>
+                <span class="info-value" id="bloodPressureValue">未填写</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">是否处于妊娠期</span>
+                <span class="info-value" id="isPregnancyValue">未填写</span>
+            </div>
+        </div>
+
+        <!-- 糖尿病病情 -->
+        <div class="info-card">
+            <h2 class="card-title">糖尿病病情</h2>
+            <div class="info-item">
+                <span class="info-label">是否患病</span>
+                <span class="info-value" id="diseaseValue">未填写</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">风险及建议</span>
+                <span class="info-value" id="riskAdviceValue">未填写</span>
+            </div>
+        </div>
+
+        <!-- 加载指示器 -->
+        <div class="loading-indicator" id="loadingIndicator" style="display: none;">
+            <div class="loading-spinner"></div>
+            <p>正在进行风险评估...</p>
+        </div>
+        
+        <!-- 操作按钮 -->
+        <div class="action-buttons" id="actionButtons" style="display: none;">
+            <button class="btn btn-secondary" id="cancelBtn">取消</button>
+            <button class="btn btn-primary" id="saveBtn">保存</button>
+        </div>
+    </div>
+
+    <script>
+        // 用户信息数据
+        let userInfo = {
+            age: "",
+            gender: "",
+            familyHistory: "",
+            height: "",
+            weight: "",
+            waist: "",
+            bloodPressure: "",
+            isPregnancy: "",
+            disease: "",
+            riskAdvice: ""
+        };
+
+        let isEditMode = false;
+        
+        // 返回上一页
+        function handleBack() {
+            window.history.back();
+        }
+
+        // 进入编辑模式
+        document.getElementById('modifyBtn').addEventListener('click', function() {
+            isEditMode = true;
+            
+            // 隐藏修改按钮
+            this.style.display = 'none';
+            
+            // 显示操作按钮
+            document.getElementById('actionButtons').style.display = 'flex';
+            
+            // 将所有信息项转换为编辑模式
+            const infoItems = document.querySelectorAll('.info-item');
+            infoItems.forEach((item, index) => {
+                const label = item.querySelector('.info-label').textContent;
+                const valueElement = item.querySelector('.info-value');
+                const currentValue = valueElement.textContent;
+                
+                // 创建输入框
+                let inputHTML = '';
+                switch(label) {
+                    case '年龄':
+                        inputHTML = `<input type="number" class="edit-input" id="editAge" value="${userInfo.age}" placeholder="请输入年龄">`;
+                        break;
+                    case '性别':
+                        inputHTML = `
+                            <select class="edit-input" id="editGender">
+                                <option value="男" ${userInfo.gender === '男' ? 'selected' : ''}>男</option>
+                                <option value="女" ${userInfo.gender === '女' ? 'selected' : ''}>女</option>
+                            </select>
+                        `;
+                        break;
+                    case '家族病史':
+                        inputHTML = `<input type="text" class="edit-input" id="editFamilyHistory" value="${userInfo.familyHistory}" placeholder="请输入家族病史">`;
+                        break;
+                    case '身高':
+                        inputHTML = `<input type="number" class="edit-input" id="editHeight" value="${userInfo.height}" placeholder="请输入身高（cm）">`;
+                        break;
+                    case '体重':
+                        inputHTML = `<input type="number" class="edit-input" id="editWeight" value="${userInfo.weight}" placeholder="请输入体重（kg）">`;
+                        break;
+                    case '腰围':
+                        inputHTML = `<input type="number" class="edit-input" id="editWaist" value="${userInfo.waist}" placeholder="请输入腰围（cm）">`;
+                        break;
+                    case '收缩压':
+                        inputHTML = `<input type="number" class="edit-input" id="editBloodPressure" value="${userInfo.bloodPressure}" placeholder="请输入收缩压（mmHg）">`;
+                        break;
+                    case '是否处于妊娠期':
+                        inputHTML = `
+                            <select class="edit-input" id="editIsPregnancy">
+                                <option value="是" ${userInfo.isPregnancy === '是' ? 'selected' : ''}>是</option>
+                                <option value="否" ${userInfo.isPregnancy === '否' ? 'selected' : ''}>否</option>
+                            </select>
+                        `;
+                        break;
+                    case '是否患病':
+                        inputHTML = `
+                            <select class="edit-input" id="editDisease">
+                                <option value="是" ${userInfo.disease === '是' ? 'selected' : ''}>是</option>
+                                <option value="否" ${userInfo.disease === '否' ? 'selected' : ''}>否</option>
+                            </select>
+                        `;
+                        break;
+                    case '风险及建议':
+                        inputHTML = `<div class="info-value" style="color: #0ea5e9;">由系统自动生成</div>`;
+                        break;
+                }
+                
+                item.innerHTML = `
+                    <span class="info-label">${label}</span>
+                    ${inputHTML}
+                `;
+                item.classList.add('edit-mode');
+            });
+        });
+
+        // 取消编辑
+        document.getElementById('cancelBtn').addEventListener('click', function() {
+            isEditMode = false;
+            
+            // 显示修改按钮
+            document.getElementById('modifyBtn').style.display = 'block';
+            
+            // 隐藏操作按钮
+            document.getElementById('actionButtons').style.display = 'none';
+            
+            // 恢复显示模式
+            updateInfoDisplay();
+        });
+
+        // 保存信息
+        document.getElementById('saveBtn').addEventListener('click', function() {
+            // 获取编辑后的值
+            userInfo.age = document.getElementById('editAge').value;
+            userInfo.gender = document.getElementById('editGender').value;
+            userInfo.familyHistory = document.getElementById('editFamilyHistory').value;
+            userInfo.height = document.getElementById('editHeight').value;
+            userInfo.weight = document.getElementById('editWeight').value;
+            userInfo.waist = document.getElementById('editWaist').value;
+            userInfo.bloodPressure = document.getElementById('editBloodPressure').value;
+            userInfo.isPregnancy = document.getElementById('editIsPregnancy').value;
+            userInfo.disease = document.getElementById('editDisease').value;
+            
+            // 验证输入
+            if (!userInfo.age || !userInfo.gender || !userInfo.height || !userInfo.weight || !userInfo.familyHistory || !userInfo.disease) {
+                Swal.fire({
+                    title: '提示',
+                    text: '请填写所有必填项',
+                    icon: 'warning'
+                });
+                return;
+            }
+            
+            // 获取用户ID
+            const savedUserInfo = localStorage.getItem('userInfo');
+            if (!savedUserInfo) {
+                Swal.fire({
+                    title: '错误',
+                    text: '用户未登录，请重新登录',
+                    icon: 'error'
+                });
+                return;
+            }
+            const userData = JSON.parse(savedUserInfo);
+            const userId = userData.username;
+            
+            // 准备工作流输入数据
+            const workflowInputs = {
+                userId: userId,
+                age: userInfo.age,
+                sex: userInfo.gender,
+                height: userInfo.height,
+                weight: userInfo.weight,
+                familyHistory: userInfo.familyHistory,
+                waistline: userInfo.waist || '',
+                systolicPressure: userInfo.bloodPressure || '',
+                isPregnancy: userInfo.isPregnancy || '否',
+                disease: userInfo.disease
+            };
+            
+            // 显示加载动画
+            document.getElementById('loadingIndicator').style.display = 'block';
+            
+            // 调用工作流API
+            fetch('http://192.168.43.183/v1/workflows/run', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer app-4rvo7ufFdCZxOwYb3J4BTOHb'
+                },
+                body: JSON.stringify({
+                    inputs: workflowInputs,
+                    response_mode: "blocking",
+                    user: userId
+                })
+            })
+            .then(response => {
+                console.log('API响应状态:', response.status, response.statusText);
+                if (!response.ok) {
+                    throw new Error('HTTP错误！状态码: ' + response.status + ', 状态文本: ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(responseData => {
+                console.log('API原始响应:', responseData);
+                
+                // 解析响应数据
+                let parsedData;
+                if (responseData.data && responseData.data.outputs && responseData.data.outputs.body) {
+                    if (typeof responseData.data.outputs.body === 'string') {
+                        parsedData = JSON.parse(responseData.data.outputs.body);
+                    } else {
+                        parsedData = responseData.data.outputs.body;
+                    }
+                }
+                
+                console.log('解析后的响应:', parsedData);
+                
+                // 更新风险及建议
+                console.log('解析后的响应数据:', parsedData);
+                if (parsedData && parsedData.result) {
+                    userInfo.riskAdvice = parsedData.result;
+                    console.log('风险评估结果:', userInfo.riskAdvice);
+                } else {
+                    userInfo.riskAdvice = '风险评估结果获取失败';
+                    console.log('风险评估失败');
+                }
+                
+                // 保存到localStorage
+                localStorage.setItem('userPersonalInfo', JSON.stringify(userInfo));
+                console.log('保存到localStorage成功');
+                
+                // 隐藏加载动画并显示成功消息
+                document.getElementById('loadingIndicator').style.display = 'none';
+                Swal.fire({
+                    title: '保存成功',
+                    text: '个人信息已更新，风险评估已完成',
+                    icon: 'success',
+                    timer: 1500
+                }).then(() => {
+                    console.log('退出编辑模式');
+                    // 退出编辑模式
+                    isEditMode = false;
+                    document.getElementById('modifyBtn').style.display = 'block';
+                    document.getElementById('actionButtons').style.display = 'none';
+                    
+                    console.log('调用updateInfoDisplay前，userInfo.riskAdvice:', userInfo.riskAdvice);
+                    
+                    // 恢复显示模式
+                    updateInfoDisplay();
+                    
+                    console.log('调用updateInfoDisplay后');
+                    const riskAdviceElement = document.getElementById('riskAdviceValue');
+                    if (riskAdviceElement) {
+                        console.log('风险建议元素值:', riskAdviceElement.textContent);
+                    } else {
+                        console.log('找不到riskAdviceValue元素');
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('API调用失败:', error);
+                // 隐藏加载动画并显示错误消息
+                document.getElementById('loadingIndicator').style.display = 'none';
+                Swal.fire({
+                    title: '错误',
+                    text: '提交数据失败: ' + error.message,
+                    icon: 'error'
+                });
+            });
+        });
+
+        // 更新信息显示
+        function updateInfoDisplay() {
+            // 更新所有字段值
+            document.getElementById('ageValue').textContent = userInfo.age ? userInfo.age + '岁' : '未填写';
+            document.getElementById('genderValue').textContent = userInfo.gender || '未填写';
+            document.getElementById('familyHistoryValue').textContent = userInfo.familyHistory || '未填写';
+            document.getElementById('heightValue').textContent = userInfo.height ? userInfo.height + 'cm' : '未填写';
+            document.getElementById('weightValue').textContent = userInfo.weight ? userInfo.weight + 'kg' : '未填写';
+            document.getElementById('waistValue').textContent = userInfo.waist ? userInfo.waist + 'cm' : '未填写';
+            document.getElementById('bloodPressureValue').textContent = userInfo.bloodPressure ? userInfo.bloodPressure + 'mmHg' : '未填写';
+            document.getElementById('isPregnancyValue').textContent = userInfo.isPregnancy || '未填写';
+            document.getElementById('diseaseValue').textContent = userInfo.disease || '未填写';
+            document.getElementById('riskAdviceValue').textContent = userInfo.riskAdvice || '未填写';
+            
+            // 恢复原始结构
+            const infoItems = document.querySelectorAll('.info-item');
+            infoItems.forEach((item, index) => {
+                item.classList.remove('edit-mode');
+                const label = item.querySelector('.info-label').textContent;
+                
+                if (label === '风险及建议') {
+                    item.innerHTML = `
+                        <span class="info-label">${label}</span>
+                        <span class="info-value" id="riskAdviceValue">${userInfo.riskAdvice || '未填写'}</span>
+                    `;
+                } else {
+                    const valueElement = item.querySelector('.info-value');
+                    item.innerHTML = `
+                        <span class="info-label">${label}</span>
+                        <span class="info-value">${valueElement.textContent}</span>
+                    `;
+                }
+            });
+        }
+
+        // 滚动条功能
+        let hideScrollbarTimeout;
+        let isDragging = false;
+
+        function updateScrollbar() {
+            const scrollbarContainer = document.getElementById('scrollbarContainer');
+            const scrollbarThumb = document.getElementById('scrollbarThumb');
+            
+            // 显示滚动条
+            scrollbarContainer.classList.add('show');
+            
+            // 计算滚动进度
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const containerHeight = scrollbarContainer.offsetHeight;
+            const thumbHeight = scrollbarThumb.offsetHeight;
+            
+            // 计算滚动条位置
+            const maxThumbPosition = containerHeight - thumbHeight;
+            const thumbPosition = (scrollTop / scrollHeight) * maxThumbPosition;
+            
+            // 更新滚动条位置
+            scrollbarThumb.style.transform = `translateY(${thumbPosition}px)`;
+            
+            // 清除之前的定时器
+            clearTimeout(hideScrollbarTimeout);
+            
+            // 设置延迟隐藏滚动条
+            hideScrollbarTimeout = setTimeout(() => {
+                if (!isDragging) {
+                    scrollbarContainer.classList.remove('show');
+                }
+            }, 1500);
+        }
+
+        // 滚动条拖动功能
+        const scrollbarThumb = document.getElementById('scrollbarThumb');
+        const scrollbarContainer = document.getElementById('scrollbarContainer');
+        let startY, startScrollTop;
+
+        // 鼠标事件处理
+        scrollbarThumb.addEventListener('mousedown', handleDragStart);
+        document.addEventListener('mousemove', handleDragMove);
+        document.addEventListener('mouseup', handleDragEnd);
+
+        // 触摸事件处理
+        scrollbarThumb.addEventListener('touchstart', handleDragStart, { passive: false });
+        document.addEventListener('touchmove', handleDragMove, { passive: false });
+        document.addEventListener('touchend', handleDragEnd);
+
+        function handleDragStart(e) {
+            isDragging = true;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            startY = clientY;
+            startScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            e.preventDefault();
+        }
+
+        function handleDragMove(e) {
+            if (!isDragging) return;
+            
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            const containerHeight = scrollbarContainer.offsetHeight;
+            const thumbHeight = scrollbarThumb.offsetHeight;
+            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const maxThumbPosition = containerHeight - thumbHeight;
+            
+            const deltaY = clientY - startY;
+            const thumbPosition = (startScrollTop / scrollHeight) * maxThumbPosition + deltaY;
+            
+            // 限制滚动条范围
+            const clampedPosition = Math.max(0, Math.min(maxThumbPosition, thumbPosition));
+            const targetScrollTop = (clampedPosition / maxThumbPosition) * scrollHeight;
+            
+            window.scrollTo({
+                top: targetScrollTop,
+                behavior: 'auto'
+            });
+            
+            e.preventDefault();
+        }
+
+        function handleDragEnd() {
+            isDragging = false;
+        }
+
+        // 滚动条点击事件
+        scrollbarContainer.addEventListener('click', (e) => {
+            if (e.target === scrollbarThumb) return;
+            
+            const containerRect = scrollbarContainer.getBoundingClientRect();
+            const thumbRect = scrollbarThumb.getBoundingClientRect();
+            const clickPosition = e.clientY - containerRect.top;
+            
+            const containerHeight = containerRect.height;
+            const thumbHeight = thumbRect.height;
+            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const maxThumbPosition = containerHeight - thumbHeight;
+            
+            // 计算目标位置
+            let targetThumbPosition;
+            if (clickPosition < thumbRect.top - containerRect.top) {
+                targetThumbPosition = clickPosition;
+            } else {
+                targetThumbPosition = clickPosition - thumbHeight;
+            }
+            
+            // 限制范围
+            targetThumbPosition = Math.max(0, Math.min(maxThumbPosition, targetThumbPosition));
+            const targetScrollTop = (targetThumbPosition / maxThumbPosition) * scrollHeight;
+            
+            window.scrollTo({
+                top: targetScrollTop,
+                behavior: 'smooth'
+            });
+        });
+
+        // 回到顶部功能
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // 滚动页面时更新滚动条和回到顶部按钮
+        window.addEventListener('scroll', () => {
+            updateScrollbar();
+            
+            const backToTop = document.getElementById('backToTop');
+            if (window.pageYOffset > 300) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        });
+
+
+
+        // 页面加载时从localStorage读取数据
+        window.addEventListener('load', () => {
+            const savedInfo = localStorage.getItem('userPersonalInfo');
+            if (savedInfo) {
+                userInfo = JSON.parse(savedInfo);
+                updateInfoDisplay();
+            }
+        });
+    </script>
+</body>
+</html>

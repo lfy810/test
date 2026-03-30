@@ -236,7 +236,7 @@ body{font-family:'PingFang SC','Helvetica Neue',Arial,sans-serif;background:line
                 <span class="tag">甲状腺疾病</span>
             </div>
             
-            <button class="consult-btn">立即咨询</button>
+            <button class="consult-btn" onclick="window.location.href='doctor-consult-zhang.html'">立即咨询</button>
         </div>
         
         <!-- 统计信息 -->
@@ -368,10 +368,7 @@ body{font-family:'PingFang SC','Helvetica Neue',Arial,sans-serif;background:line
             }
         }
 
-        /* 咨询按钮点击事件 */
-        document.querySelector('.consult-btn').addEventListener('click', function() {
-            alert('咨询功能即将上线，敬请期待！');
-        });
+
 
         // 滚动条功能
         const scrollbarContainer = document.getElementById('scrollbarContainer');

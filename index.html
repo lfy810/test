@@ -571,7 +571,7 @@
                     </div>
                     <div class="doctor-name">张伟明</div>
                     <div class="doctor-dept">内分泌科<br>主任医师</div>
-                    <button class="consult-btn">立即咨询</button>
+                    <button class="consult-btn" onclick="event.stopPropagation(); window.location.href='doctor-consult-zhang.html'">立即咨询</button>
                 </div>
                 <div class="doctor-card tide-left" onclick="window.location.href='doctor-li.html'">
                     <div class="doctor-avatar">
@@ -579,7 +579,7 @@
                     </div>
                     <div class="doctor-name">李雅琴</div>
                     <div class="doctor-dept">内分泌科<br>副主任医师</div>
-                    <button class="consult-btn">立即咨询</button>
+                    <button class="consult-btn" onclick="event.stopPropagation(); window.location.href='doctor-consult-li.html'">立即咨询</button>
                 </div>
                 <div class="doctor-card tide-left" onclick="window.location.href='doctor-wang.html'">
                     <div class="doctor-avatar">
@@ -587,7 +587,7 @@
                     </div>
                     <div class="doctor-name">王建国</div>
                     <div class="doctor-dept">内分泌科<br>主治医师</div>
-                    <button class="consult-btn">立即咨询</button>
+                    <button class="consult-btn" onclick="event.stopPropagation(); window.location.href='doctor-consult-wang.html'">立即咨询</button>
                 </div>
             </div>
         </section>
@@ -710,20 +710,23 @@
     <script>
         // 底部导航切换
 const tabItems=document.querySelectorAll('.tab-item');
-tabItems.forEach(item=>{
+tabItems.forEach((item,index)=>{
     item.addEventListener('click',()=>{
         tabItems.forEach(tab=>tab.classList.remove('active'));
         item.classList.add('active');
+        
+        // 页面跳转逻辑
+        const tabText = item.querySelector('span').textContent;
+        switch(tabText){
+            case '个人中心':
+                window.location.href = 'mine/mine.html';
+                break;
+            // 其他页面跳转可以在这里添加
+        }
     });
 });
 
-// 咨询按钮点击事件
-const consultBtns=document.querySelectorAll('.consult-btn');
-consultBtns.forEach(btn=>{
-    btn.addEventListener('click',()=>{
-        alert('咨询功能即将上线，敬请期待！');
-    });
-});
+
 
 // 热门搜索关键词
 const hotKeywords = [

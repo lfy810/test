@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI智能管理平台 - 糖尿病管理助手</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f8fafc 100%);
+            color: #1e293b;
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 750px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            padding-bottom: 64px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.05);
+            border-radius: 0 0 20px 20px;
+        }
+        
+        /* 页面头部 */
+        .page-header {
+            background: linear-gradient(135deg, #0369a1, #0ea5e9);
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(3, 105, 161, 0.2);
+        }
+        
+        .back-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            margin-right: 16px;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+        
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: white;
+            margin: 0;
+            flex: 1;
+            text-align: center;
+        }
+        
+        /* AI助手区域 */
+        .ai-assistant-section {
+            padding: 24px;
+        }
+        
+        .ai-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 16px;
+            background: rgba(14, 165, 233, 0.1);
+            border-radius: 12px;
+        }
+        
+        .ai-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0ea5e9, #0369a1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            margin-right: 16px;
+        }
+        
+        .ai-info {
+            flex: 1;
+        }
+        
+        .ai-name {
+            font-weight: 600;
+            color: #0ea5e9;
+            margin-bottom: 4px;
+        }
+        
+        .ai-description {
+            font-size: 14px;
+            color: #64748b;
+        }
+        
+        /* 聊天区域 */
+        .chat-container {
+            height: 500px;
+            overflow-y: auto;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .message {
+            margin-bottom: 16px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .message.user {
+            justify-content: flex-end;
+        }
+        
+        .message.ai {
+            justify-content: flex-start;
+        }
+        
+        .message-content {
+            max-width: 75%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            position: relative;
+        }
+        
+        .message.user .message-content {
+            background: linear-gradient(135deg, #0ea5e9, #0369a1);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        
+        .message.ai .message-content {
+            background: white;
+            color: #333;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .message-time {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 4px;
+            text-align: right;
+        }
+        
+        .message.ai .message-time {
+            text-align: left;
+        }
+        
+        /* 输入区域 */
+        .input-container {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .input-box {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 24px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+            resize: none;
+            min-height: 48px;
+            max-height: 120px;
+        }
+        
+        .input-box:focus {
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        }
+        
+        .send-btn {
+            background: linear-gradient(135deg, #0ea5e9, #0369a1);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            margin-left: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+        
+        .send-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+        }
+        
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* 加载动画 */
+        .loading-indicator {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            background: white;
+            border-radius: 18px;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 16px;
+        }
+        
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(14, 165, 233, 0.3);
+            border-top: 2px solid #0ea5e9;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 提示区域 */
+        .tips-section {
+            padding: 16px;
+            background: rgba(14, 165, 233, 0.05);
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .tips-title {
+            font-weight: 600;
+            color: #0ea5e9;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tips-list {
+            list-style: none;
+            font-size: 14px;
+            color: #64748b;
+        }
+        
+        .tips-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .tips-list li:before {
+            content: '•';
+            color: #0ea5e9;
+            position: absolute;
+            left: 0;
+        }
+        
+        /* 权限提示 */
+        .permission-error {
+            text-align: center;
+            padding: 60px 24px;
+            color: #ef4444;
+        }
+        
+        .permission-error h2 {
+            margin-bottom: 16px;
+            color: #ef4444;
+        }
+        
+        .permission-error p {
+            margin-bottom: 24px;
+            color: #64748b;
+        }
+        
+        .back-home-btn {
+            background: linear-gradient(135deg, #0ea5e9, #0369a1);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .back-home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+        }
+        
+        /* 霓虹涟漪效果 */
+        @keyframes ripple {
+            0% {
+                transform: scale(1);
+                box-shadow: 
+                    0 0 15px rgba(14, 165, 233, 0.6),
+                    0 0 30px rgba(14, 165, 233, 0.3),
+                    0 0 45px rgba(14, 165, 233, 0.1);
+            }
+            50% {
+                transform: scale(1.1);
+                box-shadow: 
+                    0 0 25px rgba(255, 255, 255, 0.9),
+                    0 0 50px rgba(255, 255, 255, 0.5),
+                    0 0 75px rgba(255, 255, 255, 0.3);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 
+                    0 0 15px rgba(14, 165, 233, 0.6),
+                    0 0 30px rgba(14, 165, 233, 0.3),
+                    0 0 45px rgba(14, 165, 233, 0.1);
+            }
+        }
+        
+        /* 从右向左的聚拢效果 */
+        @keyframes tide-left {
+            0% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .tide-left {
+            animation: tide-left 0.8s ease-out forwards;
+        }
+        
+        /* 滚动条样式 */
+        .scrollbar-container {
+            position: fixed;
+            right: 10px;
+            top: 100px;
+            bottom: 80px;
+            width: 12px;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 6px;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            cursor: pointer;
+            box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .scrollbar-container.show {
+            opacity: 1;
+        }
+        
+        .scrollbar-thumb {
+            width: 100%;
+            height: 60px;
+            background: linear-gradient(180deg, #0ea5e9, #0369a1);
+            border-radius: 6px;
+            position: absolute;
+            cursor: grab;
+            transition: all 0.2s ease;
+            box-shadow: 
+                0 2px 8px rgba(14, 165, 233, 0.4),
+                0 1px 3px rgba(14, 165, 233, 0.2);
+        }
+        
+        .scrollbar-thumb:active {
+            cursor: grabbing;
+            transform: scale(1.05);
+            box-shadow: 
+                0 4px 12px rgba(14, 165, 233, 0.6),
+                0 2px 6px rgba(14, 165, 233, 0.3);
+        }
+        
+        .scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #38bdf8, #0ea5e9);
+            box-shadow: 
+                0 3px 10px rgba(14, 165, 233, 0.5),
+                0 1px 4px rgba(14, 165, 233, 0.3);
+        }
+        
+        /* 返回顶部按钮 */
+        .back-to-top {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(180deg, #0ea5e9, #0369a1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s 0.5s;
+            z-index: 9998;
+        }
+        
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s;
+        }
+        
+        .back-to-top:hover {
+            transform: translateX(-50%) scale(1.1);
+            box-shadow: 0 6px 16px rgba(14, 165, 233, 0.5);
+        }
+        
+        /* AI头像添加涟漪效果 */
+        .ai-avatar {
+            animation: ripple 8s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 页面头部 -->
+        <div class="page-header">
+            <button class="back-btn" onclick="handleBack()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1 class="page-title">AI智能管理平台</h1>
+        </div>
+        
+        <!-- AI助手区域 -->
+        <div class="ai-assistant-section">
+            <!-- 权限检查 -->
+            <div id="permissionError" class="permission-error" style="display: none;">
+                <h2><i class="fas fa-lock"></i> 权限不足</h2>
+                <p>只有管理员账号才能访问AI智能管理平台</p>
+                <button class="back-home-btn" onclick="handleBack()">返回首页</button>
+            </div>
+            
+            <!-- AI助手内容 -->
+            <div id="aiContent" style="display: none;">
+                <div class="ai-header">
+                    <div class="ai-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="ai-info">
+                        <div class="ai-name">AI智能助手</div>
+                        <div class="ai-description">帮您管理糖尿病相关数据和系统配置</div>
+                    </div>
+                </div>
+                
+                <!-- 提示区域 -->
+                <div class="tips-section">
+                    <div class="tips-title">
+                        <i class="fas fa-lightbulb"></i>
+                        常用指令示例
+                    </div>
+                    <ul class="tips-list">
+                        <li>统计近一个月咨询糖尿病治疗方案的用户数量</li>
+                        <li>将王医生的糖尿病门诊时间改为每周二下午</li>
+                        <li>查询所有2型糖尿病患者的血糖监测数据</li>
+                        <li>添加新的糖尿病健康文章</li>
+                        <li>修改用户权限设置</li>
+                    </ul>
+                </div>
+                
+                <!-- 聊天区域 -->
+                <div class="chat-container" id="chatContainer">
+                    <!-- 消息将在这里动态添加 -->
+                </div>
+                
+                <!-- 输入区域 -->
+                <div class="input-container">
+                    <textarea class="input-box" id="userInput" placeholder="请输入您的指令..." rows="1"></textarea>
+                    <button class="send-btn" id="sendBtn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 自定义滚动条 -->
+    <div class="scrollbar-container" id="customScrollbar">
+        <div class="scrollbar-thumb" id="scrollbarThumb"></div>
+    </div>
+    
+    <!-- 返回顶部按钮 -->
+    <div class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+    
+    <script>
+        // 检查用户权限
+        function checkPermission() {
+            const savedUserInfo = localStorage.getItem('userInfo');
+            if (!savedUserInfo) {
+                showPermissionError();
+                return false;
+            }
+            
+            const userData = JSON.parse(savedUserInfo);
+            if (userData.username !== 'admin') {
+                showPermissionError();
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // 显示权限错误
+        function showPermissionError() {
+            document.getElementById('permissionError').style.display = 'block';
+            document.getElementById('aiContent').style.display = 'none';
+        }
+        
+        // 返回上一页
+        function handleBack() {
+            window.history.back();
+        }
+        
+        // 发送消息
+        function sendMessage() {
+            const inputBox = document.getElementById('userInput');
+            const message = inputBox.value.trim();
+            
+            if (!message) return;
+            
+            // 添加用户消息
+            addMessage(message, 'user');
+            inputBox.value = '';
+            
+            // 显示加载中
+            showLoading();
+            
+            // 调用AI API
+            callAI(message);
+        }
+        
+        // 添加消息到聊天区域
+        function addMessage(content, type) {
+            const chatContainer = document.getElementById('chatContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            const now = new Date();
+            const timeString = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+            
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    ${content}
+                </div>
+                <div class="message-time">${timeString}</div>
+            `;
+            
+            chatContainer.appendChild(messageDiv);
+            
+            // 添加从右向左的聚拢效果
+            setTimeout(() => {
+                messageDiv.classList.add('tide-left');
+            }, 100);
+            
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        // 显示加载中
+        function showLoading() {
+            const chatContainer = document.getElementById('chatContainer');
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'loading-indicator';
+            loadingDiv.id = 'loadingIndicator';
+            loadingDiv.innerHTML = `
+                <div class="loading-spinner"></div>
+                <span>AI正在思考...</span>
+            `;
+            chatContainer.appendChild(loadingDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        // 隐藏加载中
+        function hideLoading() {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            if (loadingIndicator) {
+                loadingIndicator.remove();
+            }
+        }
+        
+        // 调用AI API
+        async function callAI(message) {
+            const apiKey = 'app-TuEcfB48I3TpdaL35hl3hjwZ';
+            const apiUrl = 'http://192.168.43.183';
+            
+            try {
+                const response = await fetch(`${apiUrl}/v1/chat-messages`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        inputs: {},
+                        query: message,
+                        response_mode: "streaming",
+                        conversation_id: "",
+                        user: "admin"
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP错误！状态码: ${response.status}`);
+                }
+                
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let fullResponse = '';
+                
+                // 隐藏加载动画
+                hideLoading();
+                
+                // 创建AI消息容器
+                const chatContainer = document.getElementById('chatContainer');
+                const messageId = 'aiResponse_' + Date.now();
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message ai';
+                messageDiv.innerHTML = `
+                    <div class="message-content">
+                        <span id="${messageId}"></span>
+                    </div>
+                    <div class="message-time">${getCurrentTime()}</div>
+                `;
+                chatContainer.appendChild(messageDiv);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+                
+                const responseTextElement = document.getElementById(messageId);
+                
+                // 流式处理响应
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    
+                    const chunk = decoder.decode(value, { stream: true });
+                    const chunks = chunk.split('data: ');
+                    
+                    chunks.forEach((ck) => {
+                        try {
+                            const data = JSON.parse(ck);
+                            if (data && data.answer) {
+                                fullResponse += data.answer;
+                                responseTextElement.textContent = fullResponse;
+                                chatContainer.scrollTop = chatContainer.scrollHeight;
+                            }
+                        } catch (error) {
+                            // 忽略非JSON格式的内容（如[DONE]标记）
+                            if (!ck.includes('[DONE]')) {
+                                console.log("解析chunk错误:", ck);
+                            }
+                        }
+                    });
+                }
+                
+                if (!fullResponse) {
+                    responseTextElement.textContent = '处理失败，请重试';
+                }
+                
+            } catch (error) {
+                console.error('API调用失败:', error);
+                hideLoading();
+                addMessage('处理失败，请检查网络连接', 'ai');
+            }
+        }
+        
+        // 获取当前时间
+        function getCurrentTime() {
+            const now = new Date();
+            return `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+        }
+        
+        // 页面加载时检查权限
+        window.addEventListener('load', () => {
+            if (checkPermission()) {
+                document.getElementById('aiContent').style.display = 'block';
+                
+                // 添加欢迎消息
+                addMessage('您好！我是AI智能管理助手，有什么可以帮您管理的吗？', 'ai');
+                
+                // 设置事件监听
+                document.getElementById('sendBtn').addEventListener('click', sendMessage);
+                
+                document.getElementById('userInput').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendMessage();
+                    }
+                });
+                
+                // 自动调整输入框高度
+                document.getElementById('userInput').addEventListener('input', function() {
+                    this.style.height = 'auto';
+                    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+                });
+            }
+            
+            // 初始化滚动条和返回顶部按钮
+            initScrollbar();
+            initBackToTop();
+            
+            // 为消息添加从右向左的聚拢效果
+            setTimeout(() => {
+                const messages = document.querySelectorAll('.message');
+                messages.forEach((msg, index) => {
+                    setTimeout(() => {
+                        msg.classList.add('tide-left');
+                    }, index * 100);
+                });
+            }, 300);
+        });
+        
+        // 初始化自定义滚动条
+        function initScrollbar() {
+            const scrollbarContainer = document.getElementById('customScrollbar');
+            const scrollbarThumb = document.getElementById('scrollbarThumb');
+            const chatContainer = document.getElementById('chatContainer');
+            
+            if (!scrollbarContainer || !scrollbarThumb || !chatContainer) return;
+            
+            let isDragging = false;
+            
+            // 更新滚动条位置
+            function updateScrollbar() {
+                const scrollPercentage = chatContainer.scrollTop / (chatContainer.scrollHeight - chatContainer.clientHeight);
+                const maxTop = scrollbarContainer.clientHeight - scrollbarThumb.clientHeight;
+                scrollbarThumb.style.top = scrollPercentage * maxTop + 'px';
+                
+                // 显示/隐藏滚动条
+                if (chatContainer.scrollHeight > chatContainer.clientHeight) {
+                    scrollbarContainer.classList.add('show');
+                } else {
+                    scrollbarContainer.classList.remove('show');
+                }
+            }
+            
+            // 监听滚动事件
+            chatContainer.addEventListener('scroll', updateScrollbar);
+            
+            // 点击滚动条容器
+            scrollbarContainer.addEventListener('click', (e) => {
+                const rect = scrollbarContainer.getBoundingClientRect();
+                const clickPosition = e.clientY - rect.top;
+                const percentage = clickPosition / scrollbarContainer.clientHeight;
+                chatContainer.scrollTop = percentage * (chatContainer.scrollHeight - chatContainer.clientHeight);
+                updateScrollbar();
+            });
+            
+            // 拖动滚动条
+            scrollbarThumb.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                e.preventDefault();
+                document.addEventListener('mousemove', handleDrag);
+                document.addEventListener('mouseup', stopDrag);
+            });
+            
+            function handleDrag(e) {
+                if (!isDragging) return;
+                
+                const rect = scrollbarContainer.getBoundingClientRect();
+                let newTop = e.clientY - rect.top - scrollbarThumb.clientHeight / 2;
+                
+                // 限制在容器内
+                newTop = Math.max(0, Math.min(newTop, scrollbarContainer.clientHeight - scrollbarThumb.clientHeight));
+                
+                const percentage = newTop / (scrollbarContainer.clientHeight - scrollbarThumb.clientHeight);
+                chatContainer.scrollTop = percentage * (chatContainer.scrollHeight - chatContainer.clientHeight);
+                updateScrollbar();
+            }
+            
+            function stopDrag() {
+                isDragging = false;
+                document.removeEventListener('mousemove', handleDrag);
+                document.removeEventListener('mouseup', stopDrag);
+            }
+            
+            // 初始化位置
+            updateScrollbar();
+        }
+        
+        // 初始化返回顶部按钮
+        function initBackToTop() {
+            const backToTopBtn = document.getElementById('backToTop');
+            const chatContainer = document.getElementById('chatContainer');
+            
+            if (!backToTopBtn || !chatContainer) return;
+            
+            // 监听滚动事件
+            chatContainer.addEventListener('scroll', () => {
+                if (chatContainer.scrollTop > 100) {
+                    backToTopBtn.classList.add('show');
+                } else {
+                    backToTopBtn.classList.remove('show');
+                }
+            });
+            
+            // 返回顶部功能
+            backToTopBtn.addEventListener('click', () => {
+                chatContainer.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>医师咨询 - 李雅琴</title>
+    <link rel="stylesheet" href="https://static.mastergo.com/static/ai/resource/html/googleapis/css2">
+    <link rel="stylesheet" href="css/all.min.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{width:100%;height:100%;overflow-x:hidden}
+        body{font-family:'PingFang SC','Helvetica Neue',Arial,sans-serif;background:#f8fafc;color:#1e293b;line-height:1.6;overflow-x:hidden;width:100%;margin:0;padding:0}
+        .container{width:100%;background:#fff;min-height:100vh;display:flex;flex-direction:column}
+        
+        /* 顶部导航栏 */
+        .top-bar{background:linear-gradient(135deg,#0369a1,#0ea5e9);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 10px rgba(3,105,161,0.15);position:sticky;top:0;z-index:100}
+        .page-title{color:#fff;font-size:18px;font-weight:600;flex:1;text-align:center}
+        .back-btn,.trash-btn{background:none;border:none;color:#fff;font-size:20px;cursor:pointer;padding:8px;border-radius:50%;transition:all 0.3s ease}
+        .back-btn:hover,.trash-btn:hover{background:rgba(255,255,255,0.2);transform:scale(1.1)}
+        
+        /* 医师信息区域 */
+        .doctor-info{padding:20px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;background:#f8fafc}
+        .doctor-avatar{width:60px;height:60px;border-radius:50%;overflow:hidden;margin-right:16px;animation:ripple 8s ease-in-out infinite}
+        .doctor-avatar img{width:100%;height:100%;object-fit:cover}
+        .doctor-details{flex:1}
+        .doctor-name{font-size:18px;font-weight:600;margin-bottom:4px}
+        .doctor-title{font-size:14px;color:#64748b;margin-bottom:8px}
+        .doctor-stats{display:flex;gap:16px;font-size:12px;color:#94a3b8}
+        .status{display:flex;align-items:center;gap:4px}
+        .status-dot{width:8px;height:8px;border-radius:50%;background:#10b981}
+        .status-text{color:#10b981}
+        
+        /* 聊天区域 */
+        .chat-container{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px}
+        .chat-message{display:flex;align-items:flex-start;gap:12px}
+        .chat-message.user{flex-direction:row-reverse}
+        .message-avatar{width:40px;height:40px;border-radius:50%;overflow:hidden;animation:ripple 8s ease-in-out infinite}
+        .message-avatar img{width:100%;height:100%;object-fit:cover}
+        .message-content{max-width:70%}
+        .message-header{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+        .message-name{font-size:14px;font-weight:500}
+        .message-time{font-size:12px;color:#94a3b8}
+        .message-text{background:#f1f5f9;padding:12px 16px;border-radius:16px;font-size:14px;line-height:1.5}
+        .chat-message.user .message-text{background:linear-gradient(135deg,#0369a1,#0ea5e9);color:#fff}
+        
+        /* 输入区域 */
+        .input-container{padding:16px;border-top:1px solid #e2e8f0;display:flex;align-items:center;gap:12px;background:#fff}
+        .input-wrapper{flex:1;position:relative}
+        .input-box{width:100%;padding:12px 16px;border:1px solid #e2e8f0;border-radius:24px;font-size:14px;outline:none}
+        .send-btn{padding:12px 20px;background:linear-gradient(135deg,#0369a1,#0ea5e9);color:#fff;border:none;border-radius:24px;font-size:14px;cursor:pointer}
+        .send-btn:disabled{background:#cbd5e1;cursor:not-allowed}
+        
+        /* 浅蓝到白色涟漪动画 - 柔和呼吸效果 */
+        @keyframes ripple {
+            0% {
+                transform: scale(1);
+                box-shadow: 
+                    0 0 15px rgba(14, 165, 233, 0.6),
+                    0 0 30px rgba(14, 165, 233, 0.3),
+                    0 0 45px rgba(14, 165, 233, 0.1);
+            }
+            50% {
+                transform: scale(1.1);
+                box-shadow: 
+                    0 0 25px rgba(255, 255, 255, 0.9),
+                    0 0 50px rgba(255, 255, 255, 0.5),
+                    0 0 75px rgba(255, 255, 255, 0.3);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 
+                    0 0 15px rgba(14, 165, 233, 0.6),
+                    0 0 30px rgba(14, 165, 233, 0.3),
+                    0 0 45px rgba(14, 165, 233, 0.1);
+            }
+        }
+        
+        /* 潮水聚集动画 - 从右到左 */
+        @keyframes tide-left {
+            0% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        /* 潮水动画类 */
+        .tide-left {
+            animation: tide-left 0.8s ease-out forwards;
+        }
+        
+        /* 滚动条样式 */
+        .scrollbar-container {
+            position: fixed;
+            right: 10px;
+            top: 100px;
+            bottom: 80px;
+            width: 12px;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 6px;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            cursor: pointer;
+            box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .scrollbar-container.show {
+            opacity: 1;
+        }
+
+        .scrollbar-thumb {
+            width: 100%;
+            height: 60px;
+            background: linear-gradient(180deg, #0ea5e9, #0369a1);
+            border-radius: 6px;
+            position: absolute;
+            cursor: grab;
+            transition: all 0.2s ease;
+            box-shadow: 
+                0 2px 8px rgba(14, 165, 233, 0.4),
+                0 1px 3px rgba(14, 165, 233, 0.2);
+        }
+
+        .scrollbar-thumb:active {
+            cursor: grabbing;
+            transform: scale(1.05);
+            box-shadow: 
+                0 4px 12px rgba(14, 165, 233, 0.6),
+                0 2px 6px rgba(14, 165, 233, 0.3);
+        }
+
+        .scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #38bdf8, #0ea5e9);
+            box-shadow: 
+                0 3px 10px rgba(14, 165, 233, 0.5),
+                0 1px 4px rgba(14, 165, 233, 0.3);
+        }
+
+        /* 回到顶部按钮 */
+        .back-to-top {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(180deg, #0ea5e9, #0369a1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s 0.5s;
+            z-index: 9998;
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s;
+        }
+
+        .back-to-top:hover {
+            background: linear-gradient(180deg, #38bdf8, #0ea5e9);
+            box-shadow: 0 6px 16px rgba(14, 165, 233, 0.6);
+        }
+
+        /* 对方正在输入提示 */
+        .typing-indicator {
+            display: none;
+            padding: 15px 20px;
+            color: #666;
+            font-size: 14px;
+            font-style: italic;
+            animation: fadeInOut 1.5s infinite;
+            text-align: center;
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .typing-indicator.show {
+            display: block;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* 删除确认弹窗 */
+        .confirm-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center}
+        .confirm-modal.show{display:flex}
+        .modal-content{background:#fff;border-radius:12px;padding:24px;max-width:320px;width:90%;box-shadow:0 10px 40px rgba(0,0,0,0.2)}
+        .modal-title{font-size:18px;font-weight:600;margin-bottom:12px;color:#1e293b}
+        .modal-message{font-size:14px;color:#64748b;margin-bottom:24px;line-height:1.5}
+        .modal-buttons{display:flex;gap:12px;justify-content:flex-end}
+        .modal-btn{padding:10px 20px;border-radius:8px;border:none;font-size:14px;cursor:pointer;transition:all 0.3s ease}
+        .cancel-btn{background:#f1f5f9;color:#64748b}
+        .cancel-btn:hover{background:#e2e8f0}
+        .confirm-btn{background:#ef4444;color:#fff}
+        .confirm-btn:hover{background:#dc2626}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部导航栏 -->
+        <header class="top-bar">
+            <button class="back-btn" onclick="handleBack()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="page-title">在线咨询</div>
+            <button class="trash-btn" onclick="showDeleteConfirm()">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+        </header>
+        
+        <!-- 删除确认弹窗 -->
+        <div class="confirm-modal" id="confirmModal">
+            <div class="modal-content">
+                <div class="modal-title">确认删除</div>
+                <div class="modal-message">确定要删除所有聊天记录吗？此操作不可恢复。</div>
+                <div class="modal-buttons">
+                    <button class="modal-btn cancel-btn" onclick="hideDeleteConfirm()">取消</button>
+                    <button class="modal-btn confirm-btn" onclick="deleteChatHistory()">确定</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 医师信息 -->
+        <div class="doctor-info tide-left">
+            <div class="doctor-avatar">
+                <img src="img/doc2.png" alt="李雅琴">
+            </div>
+            <div class="doctor-details">
+                <div class="doctor-name">李雅琴</div>
+                <div class="doctor-title">内分泌科 副主任医师</div>
+                <div class="doctor-stats">
+                    <span>3000+课时</span>
+                    <span class="status">
+                        <span class="status-dot"></span>
+                        <span class="status-text">在线</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 聊天区域 -->
+        <div class="chat-container tide-left" id="chatContainer">
+            <!-- 消息容器 -->
+            <div id="messageContainer"></div>
+            
+            <!-- 对方正在输入提示 -->
+            <div class="typing-indicator" id="typingIndicator">
+                对方正在输入...
+            </div>
+        </div>
+        
+        <!-- 输入区域 -->
+        <div class="input-container tide-left">
+            <div class="input-wrapper">
+                <input type="text" class="input-box" id="messageInput" placeholder="请输入您的问题..." oninput="checkInput()">
+            </div>
+            <button class="send-btn" id="sendBtn" disabled onclick="sendMessage()">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 回到顶部按钮 -->
+    <div class="back-to-top" id="backToTop" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <!-- 自定义滚动条 -->
+    <div class="scrollbar-container" id="scrollbarContainer">
+        <div class="scrollbar-thumb" id="scrollbarThumb"></div>
+    </div>
+
+    <script>
+        // 返回上一页
+        function handleBack() {
+            window.history.back();
+        }
+        
+        // 显示删除确认弹窗
+        function showDeleteConfirm() {
+            const modal = document.getElementById('confirmModal');
+            modal.classList.add('show');
+        }
+        
+        // 隐藏删除确认弹窗
+        function hideDeleteConfirm() {
+            const modal = document.getElementById('confirmModal');
+            modal.classList.remove('show');
+        }
+        
+        // 删除聊天记录
+        function deleteChatHistory() {
+            const messageContainer = document.getElementById('messageContainer');
+            messageContainer.innerHTML = '';
+            hideDeleteConfirm();
+            
+            // 清除本地存储的聊天记录
+            sessionStorage.removeItem('chatHistory_li');
+            
+            // 重新添加欢迎消息
+            setTimeout(() => {
+                addMessage('doctor', '李雅琴', '您好！我是李雅琴主任医师，很高兴为您提供糖尿病相关的咨询服务。请问有什么可以帮助您的吗？');
+            }, 500);
+        }
+        
+        // 检查输入框内容
+        function checkInput() {
+            const input = document.getElementById('messageInput');
+            const sendBtn = document.getElementById('sendBtn');
+            sendBtn.disabled = input.value.trim() === '';
+        }
+        
+        // 发送消息
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            const typingIndicator = document.getElementById('typingIndicator');
+            
+            if (message) {
+                // 添加用户消息
+                addMessage('user', '您', message);
+                input.value = '';
+                checkInput();
+                
+                // 显示"对方正在输入"提示
+                typingIndicator.classList.add('show');
+                
+                // 调用API获取医师回复
+                try {
+                    const apiKey = 'app-BIZbmkk5Wu5ZCrqlb9rcFMGQ';
+                    const apiUrl = 'http://192.168.43.183';
+                    
+                    const response = await fetch(`${apiUrl}/v1/chat-messages`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${apiKey}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            inputs: {
+                                userId: "123",
+                                sex: "male",
+                                age: 30,
+                                height: 175,
+                                weight: 70,
+                                familyHistory: "none",
+                                waistline: 80,
+                                systolicPressure: 120,
+                                isPregnancy: "no",
+                                disease: "no"
+                            },
+                            query: message,
+                            response_mode: "streaming",
+                            conversation_id: "",
+                            user: "diabetes-assistant-user"
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder();
+                    let fullResponse = '';
+                    
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
+                        
+                        const chunk = decoder.decode(value, { stream: true });
+                        const chunks = chunk.split('data: ');
+                        
+                        chunks.forEach((ck) => {
+                            try {
+                                const data = JSON.parse(ck);
+                                if (data && data.answer) {
+                                    fullResponse += data.answer;
+                                }
+                            } catch (error) {
+                                // 忽略非JSON格式的内容（如[DONE]标记）
+                                if (!ck.includes('[DONE]')) {
+                                    console.log("Error parsing chunk:", ck);
+                                }
+                            }
+                        });
+                    }
+                    
+                    // 流式响应完成后，隐藏提示并添加完整消息
+                    typingIndicator.classList.remove('show');
+                    if (fullResponse) {
+                        addMessage('doctor', '李雅琴', fullResponse);
+                    } else {
+                        // 如果没有收到响应，显示错误消息
+                        addMessage('doctor', '李雅琴', '抱歉，系统暂时无法回复您的问题，请稍后再试。');
+                    }
+                } catch (error) {
+                    // 隐藏"对方正在输入"提示
+                    typingIndicator.classList.remove('show');
+                    console.error('Error:', error);
+                    addMessage('doctor', '李雅琴', '抱歉，系统暂时无法回复您的问题，请稍后再试。');
+                }
+            }
+        }
+        
+        // 添加消息到聊天区域
+        function addMessage(type, name, content) {
+            const messageContainer = document.getElementById('messageContainer');
+            const now = new Date();
+            const time = now.toLocaleTimeString('zh-CN', {hour: '2-digit', minute: '2-digit'});
+            const timestamp = now.getTime();
+            
+            const messageHTML = `
+                <div class="chat-message ${type}">
+                    <div class="message-avatar">
+                        <img src="${type === 'user' ? 'img/user.jpg' : 'img/doc2.png'}" alt="${name}">
+                    </div>
+                    <div class="message-content">
+                        <div class="message-header">
+                            <span class="message-name">${name}</span>
+                            <span class="message-time">${time}</span>
+                        </div>
+                        <div class="message-text"></div>
+                    </div>
+                </div>
+            `;
+            
+            messageContainer.insertAdjacentHTML('beforeend', messageHTML);
+            
+            // 滚动到底部
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            
+            // 使用打字机效果显示消息
+            const messageElements = document.querySelectorAll('.chat-message');
+            const lastMessageElement = messageElements[messageElements.length - 1];
+            const messageTextElement = lastMessageElement.querySelector('.message-text');
+            
+            typeWriterEffect(messageTextElement, content);
+            
+            // 保存消息到本地存储
+            saveMessageToStorage(type, name, content, time, timestamp);
+        }
+        
+        // 保存消息到本地存储
+        function saveMessageToStorage(type, name, content, time, timestamp) {
+            // 获取现有聊天记录
+            let chatHistory = JSON.parse(sessionStorage.getItem('chatHistory_li') || '[]');
+            
+            // 添加新消息
+            chatHistory.push({
+                type: type,
+                name: name,
+                content: content,
+                time: time,
+                timestamp: timestamp
+            });
+            
+            // 保存到本地存储
+            sessionStorage.setItem('chatHistory_li', JSON.stringify(chatHistory));
+        }
+        
+        // 加载历史聊天记录
+        function loadChatHistory() {
+            const chatHistory = JSON.parse(sessionStorage.getItem('chatHistory_li') || '[]');
+            
+            if (chatHistory.length > 0) {
+                // 清空消息容器
+                const messageContainer = document.getElementById('messageContainer');
+                messageContainer.innerHTML = '';
+                
+                // 加载所有历史消息
+                chatHistory.forEach((message, index) => {
+                    const messageHTML = `
+                        <div class="chat-message ${message.type}">
+                            <div class="message-avatar">
+                                <img src="${message.type === 'user' ? 'img/user.jpg' : 'img/doc2.png'}" alt="${message.name}">
+                            </div>
+                            <div class="message-content">
+                                <div class="message-header">
+                                    <span class="message-name">${message.name}</span>
+                                    <span class="message-time">${message.time}</span>
+                                </div>
+                                <div class="message-text">${message.content}</div>
+                            </div>
+                        </div>
+                    `;
+                    messageContainer.insertAdjacentHTML('beforeend', messageHTML);
+                });
+                
+                // 滚动到底部
+                const chatContainer = document.getElementById('chatContainer');
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            } else {
+                // 如果没有历史记录，添加欢迎消息
+                addMessage('doctor', '李雅琴', '您好！我是李雅琴主任医师，很高兴为您提供糖尿病相关的咨询服务。请问有什么可以帮助您的吗？');
+            }
+        }
+        
+        // 打字机效果函数
+        function typeWriterEffect(element, text) {
+            let index = 0;
+            const speed = 30; // 打字速度（毫秒/字符）
+            
+            function type() {
+                if (index< text.length) {
+                    element.textContent += text.charAt(index);
+                    index++;
+                    setTimeout(type, speed);
+                }
+            }
+            
+            type();
+        }
+        
+        // 回车发送消息
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // 回到顶部功能
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // 滚动条功能
+        let hideScrollbarTimeout;
+        let isDragging = false;
+        const backToTop = document.getElementById('backToTop');
+
+        function updateScrollbar() {
+            const scrollbarContainer = document.getElementById('scrollbarContainer');
+            const scrollbarThumb = document.getElementById('scrollbarThumb');
+            
+            // 显示滚动条
+            scrollbarContainer.classList.add('show');
+            
+            // 计算滚动进度
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const containerHeight = scrollbarContainer.offsetHeight;
+            const thumbHeight = scrollbarThumb.offsetHeight;
+            
+            // 计算滚动条位置
+            const maxThumbPosition = containerHeight - thumbHeight;
+            const thumbPosition = (scrollTop / scrollHeight) * maxThumbPosition;
+            
+            // 更新滚动条位置
+            scrollbarThumb.style.transform = `translateY(${thumbPosition}px)`;
+            
+            // 清除之前的定时器
+            clearTimeout(hideScrollbarTimeout);
+            
+            // 设置延迟隐藏滚动条
+            hideScrollbarTimeout = setTimeout(() => {
+                if (!isDragging) {
+                    scrollbarContainer.classList.remove('show');
+                }
+            }, 1500);
+        }
+
+        // 滚动条拖动功能
+        const scrollbarThumb = document.getElementById('scrollbarThumb');
+        const scrollbarContainer = document.getElementById('scrollbarContainer');
+        let startY, startScrollTop;
+
+        // 鼠标事件处理
+        scrollbarThumb.addEventListener('mousedown', handleDragStart);
+        document.addEventListener('mousemove', handleDragMove);
+        document.addEventListener('mouseup', handleDragEnd);
+
+        // 触摸事件处理
+        scrollbarThumb.addEventListener('touchstart', handleDragStart, { passive: false });
+        document.addEventListener('touchmove', handleDragMove, { passive: false });
+        document.addEventListener('touchend', handleDragEnd);
+
+        function handleDragStart(e) {
+            isDragging = true;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            startY = clientY;
+            startScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            e.preventDefault();
+        }
+
+        function handleDragMove(e) {
+            if (!isDragging) return;
+            
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            const containerHeight = scrollbarContainer.offsetHeight;
+            const thumbHeight = scrollbarThumb.offsetHeight;
+            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const maxThumbPosition = containerHeight - thumbHeight;
+            
+            const deltaY = clientY - startY;
+            const thumbPosition = (startScrollTop / scrollHeight) * maxThumbPosition + deltaY;
+            
+            // 限制滚动条范围
+            const clampedPosition = Math.max(0, Math.min(maxThumbPosition, thumbPosition));
+            const targetScrollTop = (clampedPosition / maxThumbPosition) * scrollHeight;
+            
+            window.scrollTo({
+                top: targetScrollTop,
+                behavior: 'auto'
+            });
+            
+            e.preventDefault();
+        }
+
+        function handleDragEnd() {
+            isDragging = false;
+        }
+
+        // 滚动条点击事件
+        scrollbarContainer.addEventListener('click', (e) => {
+            if (e.target === scrollbarThumb) return;
+            
+            const containerRect = scrollbarContainer.getBoundingClientRect();
+            const thumbRect = scrollbarThumb.getBoundingClientRect();
+            const clickPosition = e.clientY - containerRect.top;
+            
+            const containerHeight = containerRect.height;
+            const thumbHeight = thumbRect.height;
+            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const maxThumbPosition = containerHeight - thumbHeight;
+            
+            // 计算目标位置
+            let targetThumbPosition;
+            if (clickPosition < thumbRect.top - containerRect.top) {
+                targetThumbPosition = Math.max(0, thumbPosition - thumbHeight);
+            } else {
+                targetThumbPosition = Math.min(maxThumbPosition, thumbPosition + thumbHeight);
+            }
+            
+            const targetScrollTop = (targetThumbPosition / maxThumbPosition) * scrollHeight;
+            window.scrollTo({
+                top: targetScrollTop,
+                behavior: 'smooth'
+            });
+        });
+
+        // 监听滚动事件
+        window.addEventListener('scroll', () => {
+            updateScrollbar();
+            
+            // 显示/隐藏回到顶部按钮
+            if (window.pageYOffset > 300) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        });
+        
+        // 页面加载完成后，等待动画结束加载聊天记录
+        window.addEventListener('load', () => {
+            // 等待0.8秒（动画持续时间）后加载聊天记录
+            setTimeout(() => {
+                loadChatHistory();
+            }, 800);
+        });
+    </script>
+</body>
+</html>
